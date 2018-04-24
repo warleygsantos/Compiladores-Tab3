@@ -6,7 +6,6 @@ logging.basicConfig(filename='analisador-lexico.log',level=logging.DEBUG,format=
 logging.info('Beging')
 file = open('FONTE.ALG', 'r')
 
-
 def isLiteral(caracter):
 	return caracter in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
@@ -15,9 +14,6 @@ def isNumeral(caracter):
 
 def isFinalState(number):
 	return number in range(1, 13)
-
-#print(file.read(1))
-s = 0
 
 tabela = {
 # Estado Inicial
@@ -38,10 +34,10 @@ tabela = {
 	15:
 		{'D':15},
 	16:
-		{'TAB': 16, 'SPACE': 16, 'ENTER': 16, '"': 16, '.':16, 'L':16, 'D':16, '_':16, '{':16, '}':16, '=':16, '<':16,
+		{'TAB': 16, 'SPACE': 16, 'ENTER': 16, '"': 1, '.':16, 'L':16, 'D':16, '_':16, '{':16, '}':16, '=':16, '<':16,
 		'>':16, '-':16, '+':16,	'*':16, '/':16, '(':16, ')':16, ';':16, 'e':16, 'E':16},
 	17:
-		{'TAB': 17, 'SPACE': 17, 'ENTER': 17, '"': 17, '.':17, 'L':17, 'D':17, '_':17, '{':17, '}':17, '=':17, '<':17,
+		{'TAB': 17, 'SPACE': 17, 'ENTER': 17, '"': 17, '.':17, 'L':17, 'D':17, '_':17, '{':17, '}':3, '=':17, '<':17,
 		'>':17, '-':17, '+':17,	'*':17, '/':17, '(':17, ')':17, ';':17, 'e':17, 'E':17},
 	18:
 		{'D':14},
@@ -51,26 +47,38 @@ tabela = {
 		{'D':15}
 }
 
-continua = True
-string = ''
-while(continua):
-	buffe = file.read(1);
-	c = buffe
+def leToken():
+	continua = True
+	string = ''
+	s = 0
+	while(continua):
+		buffe = file.read(1);
+		c = buffe
 
-	if (isLiteral(c)):
-		buffe = 'L'
-	elif (isNumeral(c)):
-		buffe = 'D'
+		if (isLiteral(c)):
+			buffe = 'L'
+		elif (isNumeral(c)):
+			buffe = 'D'
 
-	try:
-		s = tabela[s][buffe]
-		string = string + c
-	except Exception:
-		continua = False
-		if isFinalState(s):
-			print (string)
-			print ("E estado final")
-		else:
-			print ("Nao e estado final")
+		try:
+			s = tabela[s][buffe]
+			string = string + c
+		except Exception:
+			continua = False
+			if isFinalState(s):
+				print (string)
+				print ("E estado final")
+			else:
+				print ("Nao e estado final")
+
+leToken()
+leToken()
+leToken()
+leToken()
+leToken()
+leToken()
+leToken()
+leToken()
+
 
 #s = tabela[s]['=']
