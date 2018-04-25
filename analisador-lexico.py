@@ -2,8 +2,8 @@ import logging
 import utilitarios
 
 FORMAT = '%(asctime)s %(levelname)s:%(name)s:%(lineno)s\t-> %(message)s'
-#logging.basicConfig(filename='analisador-lexico.log',level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
-logging.basicConfig(level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
+logging.basicConfig(filename='analisador-lexico.log',level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
+#logging.basicConfig(level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
 
 logging.info('Beging')
 file = open('FONTE.ALG', 'r')
@@ -16,45 +16,45 @@ tokens = {
 tabela = {
 	#Corresponte a tabela de transições do DFA.
 	#
-	#Estados que não possuem regra de transição não tem nescessidade de estar presente na tabela.
+	#Estados que não possuem regra de transição não tem nescessidade de estar na tabela.
 	0:
-		#Estado Inicial
+		#Transicoes do Estado Inicial. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{'	':21, ' ':23, '\n':22, '"':16, 'L':2, 'D':13, '{':17, 'EOF':4, '=':5, '<':6, '>':7, '-':9, '+':9, '*':9,
 		'/':9, '(':10, ')':11, ';':12},
 	2:
-		#Estado 2.
+		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{'L':2, 'D':2, '_':2},
 	6:
-		#Estado 6.
+		#Transicoes do estado 6. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{'=':5, '-':8},
 	7:
-		#Estado 7.
+		#Transicoes do estado 7. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{'=':5},
 	13:
-		#Estado 13.
+		#Transicoes do estado 13. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{'.':18, 'D':13, 'e':19, 'E':19},
 	14:
-		#Estado 14.
+		#Transicoes do estado 14. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{'D':14, 'e':14, 'E':14},
 	15:
-		#Estado 15.
+		#Transicoes do estado 15. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{'D':15},
 	16:
-		#Estado 16.
+		#Transicoes do estado 16. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{'	':16, ' ':16, '\n':16, '"':1, '.':16, 'L':16, 'D':16, '_':16, '{':16, '}':16, '=':16, '<':16, '>':16,
 		'-':16, '+':16,	'*':16, '/':16, '(':16, ')':16, ';':16, 'e':16, 'E':16, ':':16, '\\':16},
 	17:
-		#Estado 17.
+		#Transicoes do estado 17. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{'	':17, ' ':17, '\n':17, '"':17, '.':17, 'L':17, 'D':17, '_':17, '{':17, '}':3, '=':17, '<':17, '>':17,
 		'-':17, '+':17,	'*':17, '/':17, '(':17, ')':17, ';':17, 'e':17, 'E':17, ':':17, '\\':17},
 	18:
-		#Estado 18.
+		#Transicoes do estado 18. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{'D':14},
 	19:
-		#Estado 19.
+		#Transicoes do estado 19. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{'D':15, '-':20, '+':20},
 	20:
-		#Estado 20.
+		#Transicoes do estado 20. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{'D':15}
 }
 
@@ -97,18 +97,30 @@ def leToken():
 				if(token in ('Num', 'Literal', 'id')):
 					tipo = 'Nao definido'
 					logging.info('Token: {}\tLexema: {}\tTipo: {}'.format(token, lexema, tipo))
+					return {'token':token, 'lexema':lexema, 'tipo':tipo}
 				elif(token in ('OPR', 'RCB', 'OPM', 'AB_P', 'FC_P', 'PT_V')):
 					logging.info('Token: {}\tLexema: {}'.format(token, lexema))
+					return {'token':token, 'lexema':lexema}
 				elif(token in ('Comentário', 'Tab', 'Salto', 'Espaço')):
 					logging.info('Token {} ignorado'.format(token))
 					return leToken()
 				elif(token in ('EOF')):
 					logging.info('Final de arquivo')
+					return {'token':token}
 			else:
 				token = 'ERRO'
-	return token
-
+				return {'token':token, 'causa':'Não identificado'}
 
 while (x is not 'EOF'):
-	x = leToken()
+	tupla = leToken()
+	x = tupla['token']
+
+	if('tipo' in tupla):
+		print('Token: {}\tLexema: {}\tTipo: {}'.format(tupla['token'], tupla['lexema'], tupla['tipo']))
+	elif('lexema' in tupla):
+		print('Token: {}\tLexema: {}'.format(tupla['token'], tupla['lexema']))
+	elif('cause' in tupla):
+		print('Token: {}\tCausa: {}'.format(tupla['token'], tupla['causa']))
+	elif('token' in tupla):
+		print('Token: {}\t'.format(tupla['token']))
 	#logging.info(x)
