@@ -3,7 +3,6 @@ import utilitarios
 
 FORMAT = '%(asctime)s %(levelname)s:%(name)s:%(lineno)s\t-> %(message)s'
 logging.basicConfig(filename='analisador-lexico.log',level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
-#logging.basicConfig(level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
 
 logging.info('Beging')
 file = open('FONTE.ALG', 'r')
@@ -116,7 +115,7 @@ while (x is not 'EOF'):
 	x = tupla['token']
 
 	if('tipo' in tupla):
-		print('Token: {}\tLexema: {}\tTipo: {}'.format(tupla['token'], tupla['lexema'], tupla['tipo']))
+		print('Token: {}\tLexema: {}\t\tTipo: {}'.format(tupla['token'], tupla['lexema'], tupla['tipo']))
 	elif('lexema' in tupla):
 		print('Token: {}\tLexema: {}'.format(tupla['token'], tupla['lexema']))
 	elif('cause' in tupla):
