@@ -1,19 +1,32 @@
 import logging
 
 FORMAT = '%(asctime)s %(levelname)s:%(name)s:%(lineno)s -> %(message)s'
-logging.basicConfig(filename='analisador-lexico.log',level=logging.DEBUG,format=FORMAT, datefmt='%H:%M:%S')
+logging.basicConfig(filename='analisador-lexico.log',level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
+#logging.basicConfig(level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
 
 logging.info('Beging')
 file = open('FONTE.ALG', 'r')
 
 def isLiteral(caracter):
+	"""Responsável por verificar se o caracter lido é uma letra.
+
+	Retorna VERDADEIRO caso o caracter lido for uma letra. Caso contrário FALSO.
+	"""
 	return caracter in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 def isNumeral(caracter):
+	"""Responsável por verificar se caracter lido é um numero.
+
+	Retorna VERDADEIRO caso o caracter lido for um número. Caso contrário FALSO.
+	"""
 	return caracter in '0123456789'
 
-def isFinalState(number):
-	return number in range(1, 13)
+def isFinalState(index):
+	"""Resposável por verificar se o indice corresponde a um Estado Final.
+
+	Os estados finais do DFA implementado são {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}
+	"""
+	return index in range(1, 13)
 
 tokes = {
 	1: 'Literal', 2: 'id', 3: 'Comentário', 4: 'EOF', 5:'OPR', 6:'OPR', 7:'OPR', 8:'RCB', 9:'OPM', 10:'AB_P', 11:'FC_P',
@@ -23,7 +36,7 @@ tokes = {
 tabela = {
 # Estado Inicial
 	0: 
-		{'	': 0, ' ': 0, '\n': 0, '"': 16, 'L':2, 'D':13, '{':17, 'EOF':4, '=':5, '<':6, '>':7, '-':9, '+':9,
+		{'TAB': 0, 'ESPACO': 0, 'ENTER': 0, '"': 16, 'L':2, 'D':13, '{':17, 'EOF':4, '=':5, '<':6, '>':7, '-':9, '+':9,
 		'*':9, '/':9, '(':10, ')':11, ';':12},
 	2:
 		{'L':2, 'D':2, '_':2},
@@ -39,10 +52,10 @@ tabela = {
 	15:
 		{'D':15},
 	16:
-		{'	': 16, ' ': 16, '\n': 16, '"': 1, '.':16, 'L':16, 'D':16, '_':16, '{':16, '}':16, '=':16, '<':16,
+		{'TAB': 16, 'ESPACO': 16, 'ENTER': 16, '"': 1, '.':16, 'L':16, 'D':16, '_':16, '{':16, '}':16, '=':16, '<':16,
 		'>':16, '-':16, '+':16,	'*':16, '/':16, '(':16, ')':16, ';':16, 'e':16, 'E':16},
 	17:
-		{'	': 17, ' ': 17, '\n': 17, '"': 17, '.':17, 'L':17, 'D':17, '_':17, '{':17, '}':3, '=':17, '<':17,
+		{'TAB': 17, 'ESPACO': 17, 'ENTER': 17, '"': 17, '.':17, 'L':17, 'D':17, '_':17, '{':17, '}':3, '=':17, '<':17,
 		'>':17, '-':17, '+':17,	'*':17, '/':17, '(':17, ')':17, ';':17, 'e':17, 'E':17},
 	18:
 		{'D':14},
@@ -52,30 +65,50 @@ tabela = {
 		{'D':15}
 }
 
+linha = 0
+coluna = 0
+
 def leToken():
 	continua = True
 	string = ''
-	s = 0
+	estado = 0
+
+
+	global linha
+	global coluna
+	coluna = 0
+
 	while(continua):
-		buffe = file.read(1);
-		c = buffe
+		c = file.read(1)
+		buffe = c
 
 		if (isLiteral(c)):
-			buffe = 'L'
+			c = 'L'
 		elif (isNumeral(c)):
-			buffe = 'D'
-
+			c = 'D'
+		elif (c is '\n'):
+			c = 'ENTER'
+			buffe = c
+			linha = linha + 1
+		elif (c is ' '):
+			c = 'ESPACO'
+			buffe = c
+		elif (c is '	'):
+			c = 'TAB'
+			buffe = c
 		try:
-			s = tabela[s][buffe]
-			string = string + c
+			estado = tabela[estado][c]
+			string = string + buffe
+			coluna = coluna + 1
+			logging.info('Estado mudou para {}'.format(estado))
 		except Exception:
 			continua = False
-			if isFinalState(s):
-				print (string + ' -> ' + tokes[s])
+			file.seek(file.tell() - 1)
+			if isFinalState(estado):
+				print (string + ' -> ' + tokes[estado] + "{},{}".format(linha, coluna))
 			else:
-				print ("Nao e estado final")
+				print (c)
 
 while True:
+#for x in range(0, 7):
 	leToken()
-
-#s = tabela[s]['=']
