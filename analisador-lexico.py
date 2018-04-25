@@ -1,4 +1,5 @@
 import logging
+import utilitarios
 
 FORMAT = '%(asctime)s %(levelname)s:%(name)s:%(lineno)s\t-> %(message)s'
 #logging.basicConfig(filename='analisador-lexico.log',level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
@@ -6,27 +7,6 @@ logging.basicConfig(level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
 
 logging.info('Beging')
 file = open('FONTE.ALG', 'r')
-
-def isLiteral(caracter):
-	'''Responsável por verificar se o caracter lido é uma letra.
-
-	Retorna VERDADEIRO caso o caracter lido for uma letra. Caso contrário FALSO.
-	'''
-	return caracter in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-
-def isNumeral(caracter):
-	'''Responsável por verificar se caracter lido é um numero.
-
-	Retorna VERDADEIRO caso o caracter lido for um número. Caso contrário FALSO.
-	'''
-	return caracter in '0123456789'
-
-def isFinalState(index):
-	'''Resposável por verificar se o indice corresponde a um Estado Final.
-
-	Os estados finais do DFA implementado são {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 21, 22, 23}
-	'''
-	return index in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 21, 22, 23)
 
 tokens = {
 	1: 'Literal', 2: 'id', 3: 'Comentário', 4: 'EOF', 5:'OPR', 6:'OPR', 7:'OPR', 8:'RCB', 9:'OPM', 10:'AB_P', 11:'FC_P',
@@ -87,9 +67,9 @@ def leToken():
 		if(c is ''):
 			c = 'EOF'
 			buffe = c
-		elif (isLiteral(c)):
+		elif (utilitarios.isLiteral(c)):
 			c = 'L'
-		elif (isNumeral(c)):
+		elif (utilitarios.isNumeral(c)):
 			c = 'D'
 		try:
 			estado = tabela[estado][c]
@@ -99,7 +79,7 @@ def leToken():
 			continua = False
 			if (c is not 'EOF'):
 				file.seek(file.tell() - 1)
-			if isFinalState(estado):
+			if utilitarios.isFinalState(estado):
 				token = tokens[estado]
 				if(token in ('Num', 'Literal', 'id')):
 					tipo = 'Nao definido'
