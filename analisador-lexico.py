@@ -87,6 +87,7 @@ def leToken():
 		if(c is ""):
 			c = 'EOF'
 			buffe = c
+			#logging.info("agora c is {}".format(c))
 		elif (isLiteral(c)):
 		#	logging.info("{} is literal".format(c))
 			c = 'L'
@@ -108,7 +109,8 @@ def leToken():
 		#	logging.info('Estado mudou para {}'.format(estado))
 		except Exception:
 			continua = False
-			file.seek(file.tell() - 1)
+			if (c is not 'EOF'):
+				file.seek(file.tell() - 1)
 			#if isFinalState(estado):
 			#	logging.info(string + ' -> ' + tokes[estado])
 
@@ -117,6 +119,6 @@ def leToken():
 	return tokes[estado]
 
 #while (x is not None):
-while (True):
+while (x is not 'EOF'):
 	x = leToken()
 	logging.info('Novo Token Localizado {}'.format(x))
