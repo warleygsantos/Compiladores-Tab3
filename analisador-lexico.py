@@ -1,8 +1,8 @@
 import logging
 
 FORMAT = '%(asctime)s %(levelname)s:%(name)s:%(lineno)s -> %(message)s'
-logging.basicConfig(filename='analisador-lexico.log',level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
-#logging.basicConfig(level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
+#logging.basicConfig(filename='analisador-lexico.log',level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
+logging.basicConfig(level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
 
 logging.info('Beging')
 file = open('FONTE.ALG', 'r')
@@ -67,6 +67,7 @@ tabela = {
 
 linha = 0
 coluna = 0
+x = "1"
 
 def leToken():
 	continua = True
@@ -81,15 +82,19 @@ def leToken():
 	while(continua):
 		c = file.read(1)
 		buffe = c
+		#logging.info("c is {}".format(c))
 
-		if (isLiteral(c)):
+		if(c is ""):
+			c = 'EOF'
+			buffe = c
+		elif (isLiteral(c)):
+		#	logging.info("{} is literal".format(c))
 			c = 'L'
 		elif (isNumeral(c)):
 			c = 'D'
 		elif (c is '\n'):
 			c = 'Salto'
 			buffe = c
-			linha = linha + 1
 		elif (c is ' '):
 			c = 'Espaço'
 			buffe = c
@@ -100,15 +105,18 @@ def leToken():
 			estado = tabela[estado][c]
 			string = string + buffe
 			coluna = coluna + 1
-			logging.info('Estado mudou para {}'.format(estado))
+		#	logging.info('Estado mudou para {}'.format(estado))
 		except Exception:
 			continua = False
 			file.seek(file.tell() - 1)
-			if isFinalState(estado):
-				print (string + ' -> ' + tokes[estado] + "{},{}".format(linha, coluna))
-			else:
-				print (c)
+			#if isFinalState(estado):
+			#	logging.info(string + ' -> ' + tokes[estado])
 
-while True:
-#for x in range(0, 7):
-	leToken()
+			#else:
+			#	logging.info(c)
+	return tokes[estado]
+
+#while (x is not None):
+while (True):
+	x = leToken()
+	logging.info('Novo Token Localizado {}'.format(x))
