@@ -1,6 +1,6 @@
 import logging
 
-FORMAT = '%(asctime)s %(levelname)s:%(name)s:%(lineno)s -> %(message)s'
+FORMAT = '%(asctime)s %(levelname)s:%(name)s:%(lineno)s\t-> %(message)s'
 #logging.basicConfig(filename='analisador-lexico.log',level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
 logging.basicConfig(level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
 
@@ -8,24 +8,24 @@ logging.info('Beging')
 file = open('FONTE.ALG', 'r')
 
 def isLiteral(caracter):
-	"""Responsável por verificar se o caracter lido é uma letra.
+	'''Responsável por verificar se o caracter lido é uma letra.
 
 	Retorna VERDADEIRO caso o caracter lido for uma letra. Caso contrário FALSO.
-	"""
+	'''
 	return caracter in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 def isNumeral(caracter):
-	"""Responsável por verificar se caracter lido é um numero.
+	'''Responsável por verificar se caracter lido é um numero.
 
 	Retorna VERDADEIRO caso o caracter lido for um número. Caso contrário FALSO.
-	"""
+	'''
 	return caracter in '0123456789'
 
 def isFinalState(index):
-	"""Resposável por verificar se o indice corresponde a um Estado Final.
+	'''Resposável por verificar se o indice corresponde a um Estado Final.
 
 	Os estados finais do DFA implementado são {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 21, 22, 23}
-	"""
+	'''
 	return index in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 21, 22, 23)
 
 tokens = {
@@ -65,27 +65,26 @@ tabela = {
 		{'D':15}
 }
 
-linha = 0
-coluna = 0
-x = "1"
+linha 	= 0
+coluna	= 0
+x 		= '1'
 
 def leToken():
-	continua = True
-	string = ''
-	estado = 0
-	token = ''
-	lexema = ''
-	tipo = ''
-
 	global linha
 	global coluna
-	coluna = 0
+
+	continua	= True
+	estado 		= 0
+	token 		= ''
+	lexema 		= ''
+	tipo 		= ''
+	coluna		= 0
 
 	while(continua):
 		c = file.read(1)
 		buffe = c
 
-		if(c is ""):
+		if(c is ''):
 			c = 'EOF'
 			buffe = c
 		elif (isLiteral(c)):
@@ -94,7 +93,7 @@ def leToken():
 			c = 'D'
 		try:
 			estado = tabela[estado][c]
-			string = string + buffe
+			lexema = lexema + buffe
 			coluna = coluna + 1
 		except Exception:
 			continua = False
@@ -102,11 +101,21 @@ def leToken():
 				file.seek(file.tell() - 1)
 			if isFinalState(estado):
 				token = tokens[estado]
+				if(token in ('Num', 'Literal', 'id')):
+					tipo = 'Nao definido'
+					logging.info('Token: {}\tLexema: {}\tTipo: {}'.format(token, lexema, tipo))
+				elif(token in ('OPR', 'RCB', 'OPM', 'AB_P', 'FC_P', 'PT_V')):
+					logging.info('Token: {}\tLexema: {}'.format(token, lexema))
+				elif(token in ('Comentário', 'Tab', 'Salto', 'Espaço')):
+					logging.info('Token {} ignorado'.format(token))
+					return leToken()
+				elif(token in ('EOF')):
+					logging.info('Final de arquivo')
 			else:
-				logging.info("ERRO: " +c)
+				token = 'ERRO'
 	return token
 
 
 while (x is not 'EOF'):
 	x = leToken()
-	logging.info('Novo Token Localizado {}'.format(x))
+	#logging.info(x)
