@@ -36,7 +36,7 @@ tokes = {
 tabela = {
 # Estado Inicial
 	0: 
-		{'Tab': 21, 'Espaço': 23, 'Salto': 22, '"': 16, 'L':2, 'D':13, '{':17, 'EOF':4, '=':5, '<':6, '>':7, '-':9, '+':9,
+		{'	': 21, ' ': 23, 'Salto': 22, '"': 16, 'L':2, 'D':13, '{':17, 'EOF':4, '=':5, '<':6, '>':7, '-':9, '+':9,
 		'*':9, '/':9, '(':10, ')':11, ';':12},
 	2:
 		{'L':2, 'D':2, '_':2},
@@ -52,10 +52,10 @@ tabela = {
 	15:
 		{'D':15},
 	16:
-		{'Tab': 16, 'Espaço': 16, 'Salto': 16, '"': 1, '.':16, 'L':16, 'D':16, '_':16, '{':16, '}':16, '=':16, '<':16,
+		{'	': 16, ' ': 16, 'Salto': 16, '"': 1, '.':16, 'L':16, 'D':16, '_':16, '{':16, '}':16, '=':16, '<':16,
 		'>':16, '-':16, '+':16,	'*':16, '/':16, '(':16, ')':16, ';':16, 'e':16, 'E':16, ':':16, '\\':16},
 	17:
-		{'Tab': 17, 'Espaço': 17, 'Salto': 17, '"': 17, '.':17, 'L':17, 'D':17, '_':17, '{':17, '}':3, '=':17, '<':17,
+		{'	': 17, ' ': 17, 'Salto': 17, '"': 17, '.':17, 'L':17, 'D':17, '_':17, '{':17, '}':3, '=':17, '<':17,
 		'>':17, '-':17, '+':17,	'*':17, '/':17, '(':17, ')':17, ';':17, 'e':17, 'E':17, ':':17, '\\':17},
 	18:
 		{'D':14},
@@ -82,43 +82,33 @@ def leToken():
 	while(continua):
 		c = file.read(1)
 		buffe = c
-		#logging.info("c is {}".format(c))
 
 		if(c is ""):
 			c = 'EOF'
 			buffe = c
-			#logging.info("agora c is {}".format(c))
 		elif (isLiteral(c)):
-		#	logging.info("{} is literal".format(c))
 			c = 'L'
 		elif (isNumeral(c)):
 			c = 'D'
 		elif (c is '\n'):
 			c = 'Salto'
 			buffe = c
-		elif (c is ' '):
-			c = 'Espaço'
-			buffe = c
-		elif (c is '	'):
-			c = 'Tab'
-			buffe = c
 		try:
 			estado = tabela[estado][c]
 			string = string + buffe
 			coluna = coluna + 1
-		#	logging.info('Estado mudou para {}'.format(estado))
 		except Exception:
 			continua = False
 			if (c is not 'EOF'):
 				file.seek(file.tell() - 1)
-			#if isFinalState(estado):
-			#	logging.info(string + ' -> ' + tokes[estado])
+			if isFinalState(estado):
+				logging.info("Lexema: {}".format(string))
 
-			#else:
-			#	logging.info(c)
+			else:
+				logging.info(c)
 	return tokes[estado]
 
-#while (x is not None):
+
 while (x is not 'EOF'):
 	x = leToken()
 	logging.info('Novo Token Localizado {}'.format(x))
