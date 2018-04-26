@@ -75,9 +75,8 @@ def leToken():
 
 	while(continua):
 		c = file.read(1)
-		coluna = coluna + 1
 		buffe = c
-
+		print("entrada: {}".format(c))
 		if(c is ''):
 			c = 'EOF'
 			buffe = c
@@ -97,6 +96,7 @@ def leToken():
 
 			if utilitarios.isFinalState(estado):
 				token = tokens[estado]
+				print("[{} {} - {}   {}]".format(linha, coluna, token, tell))
 				if(token in ('Num', 'Literal', 'id')):
 					tipo = 'Nao definido'
 					logging.info('Token: {}\tLexema: {}\tTipo: {}'.format(token, lexema, tipo))
@@ -106,6 +106,9 @@ def leToken():
 					return {'token':token, 'lexema':lexema}
 				elif(token in ('Comentário', 'Tab', 'Salto', 'Espaço')):
 					logging.info('Token {} ignorado'.format(token))
+					if(token is 'Salto'):
+						linha = linha + 1
+						coluna = 0
 					return leToken()
 				elif(token in ('EOF')):
 					logging.info('Final de arquivo')
