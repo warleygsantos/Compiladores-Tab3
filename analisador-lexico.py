@@ -136,7 +136,7 @@ def leToken():
 				return {'token':token, 'causa':'Não identificado', 'lexema':lexema, 'tipo':tipo}
 x = '1'
 
-while (x is not 'EOF'):
+while (x is not 'EOF' and x is not 'ERRO'):
 	tupla = leToken()
 	x = tupla['token']
 
