@@ -7,7 +7,7 @@ logging.basicConfig(filename='analisador-lexico.log',level=logging.INFO,format=F
 logging.info('Beging')
 file = open('FONTE.ALG', 'r')
 
-#fonte = file.read()
+fonte = file.read()
 
 tokens = {
 	1: 'Literal', 2: 'id', 3: 'Comentário', 4: 'EOF', 5:'OPR', 6:'OPR', 7:'OPR', 8:'RCB', 9:'OPM', 10:'AB_P', 11:'FC_P',
@@ -22,15 +22,43 @@ tabela = {
 		#Transicoes do Estado Inicial. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{'	':21, ' ':23, '\n':22, '"':16, 'L':2, 'D':13, '{':17, 'EOF':4, '=':5, '<':6, '>':7, '-':9, '+':9, '*':9,
 		'/':9, '(':10, ')':11, ';':12},
+
+	1:
+		#Transicoes do estado 1. {'CARACTER_LIDO' : NOVO_ESTADO}
+		{},
 	2:
 		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{'L':2, 'D':2, '_':2},
+	3:
+		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		{},
+	4:
+		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		{},
+	5:
+		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		{},
 	6:
 		#Transicoes do estado 6. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{'=':5, '-':8},
 	7:
 		#Transicoes do estado 7. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{'=':5},
+	8:
+		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		{},
+	9:
+		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		{},
+	10:
+		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		{},
+	11:
+		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		{},
+	12:
+		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		{},
 	13:
 		#Transicoes do estado 13. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{'.':18, 'D':13, 'e':19, 'E':19},
@@ -56,7 +84,16 @@ tabela = {
 		{'D':15, '-':20, '+':20},
 	20:
 		#Transicoes do estado 20. {'CARACTER_LIDO' : NOVO_ESTADO}
-		{'D':15}
+		{'D':15},
+	21:
+		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		{},
+	22:
+		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		{},
+	23:
+		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		{}
 }
 
 tell	= 0
@@ -70,24 +107,23 @@ def leToken():
 	lexema 		= ''
 	tipo 		= ''
 	while(continua):
-		c = file.read(1)
-		buffe = c
-		if(c is ''):
+		if(tell < len(fonte)):
+			c = fonte[tell]
+		else:
 			c = 'EOF'
-			buffe = c
-		elif (utilitarios.isLiteral(c)):
+		buffe = c
+		if (utilitarios.isLiteral(c)):
 			c = 'L'
 		elif (utilitarios.isNumeral(c)):
 			c = 'D'
-		try:
-			estado = tabela[estado][c]
+
+		disc = tabela[estado]
+		if(c in disc):
+			estado = disc[c]
 			lexema = lexema + buffe
 			tell = tell + 1
-		except Exception:
+		else:
 			continua = False
-			if (c is not 'EOF'):
-#				file.seek(file.tell() - 1) # tell() retorna valores estranhos quando le em \n. Issue432373 para mais detalhes.
-				file.seek(tell)
 			if utilitarios.isFinalState(estado):
 				token = tokens[estado]
 				if(token in ('Comentário', 'Tab', 'Salto', 'Espaço')):
@@ -97,11 +133,8 @@ def leToken():
 				return {'token':token, 'lexema':lexema, 'tipo':tipo}
 			else:
 				token = 'ERRO'
-				return {'token':token, 'causa':'Não identificado'}
-
+				return {'token':token, 'causa':'Não identificado', 'lexema':lexema, 'tipo':tipo}
 x = '1'
-
-#print(fonte)
 
 while (x is not 'EOF'):
 	tupla = leToken()
