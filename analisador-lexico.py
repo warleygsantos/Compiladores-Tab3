@@ -97,9 +97,11 @@ tabela = {
 }
 
 tell	= 0
+nLinhas = 1
 
 def leToken():
 	global tell
+	global nLinhas
 
 	continua	= True
 	estado 		= 0
@@ -122,7 +124,10 @@ def leToken():
 			estado = disc[c]
 			lexema = lexema + buffe
 			tell = tell + 1
+			if (c is '\n'):
+				nLinhas = nLinhas + 1
 		else:
+			tipo = nLinhas
 			continua = False
 			if utilitarios.isFinalState(estado):
 				token = tokens[estado]
@@ -133,7 +138,9 @@ def leToken():
 				return {'token':token, 'lexema':lexema, 'tipo':tipo}
 			else:
 				token = 'ERRO'
-				return {'token':token, 'tipo':'Não identificado', 'lexema':lexema}
+				tipo = "Erro na linha: {}".format(nLinhas)
+				logging.info('Token: {}\tLexema: {}\tTipo: {}'.format(token, lexema, tipo))
+				return {'token':token, 'tipo':tipo, 'lexema':lexema}
 x = '1'
 
 while (x is not 'EOF' and x is not 'ERRO'):
