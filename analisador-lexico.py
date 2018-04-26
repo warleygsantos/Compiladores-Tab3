@@ -7,6 +7,8 @@ logging.basicConfig(filename='analisador-lexico.log',level=logging.INFO,format=F
 logging.info('Beging')
 file = open('FONTE.ALG', 'r')
 
+#fonte = file.read()
+
 tokens = {
 	1: 'Literal', 2: 'id', 3: 'Comentário', 4: 'EOF', 5:'OPR', 6:'OPR', 7:'OPR', 8:'RCB', 9:'OPM', 10:'AB_P', 11:'FC_P',
 	12:'PT_V', 13:'Num', 14:'Num', 15:'Num', 21:'Tab', 22:'Salto', 23:'Espaço'
@@ -88,34 +90,21 @@ def leToken():
 				file.seek(tell)
 			if utilitarios.isFinalState(estado):
 				token = tokens[estado]
-				if(token in ('Num', 'Literal', 'id')):
-					tipo = 'Nao definido'
-					logging.info('Token: {}\tLexema: {}\tTipo: {}'.format(token, lexema, tipo))
-					return {'token':token, 'lexema':lexema, 'tipo':tipo}
-				elif(token in ('OPR', 'RCB', 'OPM', 'AB_P', 'FC_P', 'PT_V')):
-					logging.info('Token: {}\tLexema: {}'.format(token, lexema))
-					return {'token':token, 'lexema':lexema}
-				elif(token in ('Comentário', 'Tab', 'Salto', 'Espaço')):
+				if(token in ('Comentário', 'Tab', 'Salto', 'Espaço')):
 					logging.info('Token {} ignorado'.format(token))
 					return leToken()
-				elif(token in ('EOF')):
-					logging.info('Final de arquivo')
-					return {'token':token}
+				logging.info('Token: {}\tLexema: {}\tTipo: {}'.format(token, lexema, tipo))
+				return {'token':token, 'lexema':lexema, 'tipo':tipo}
 			else:
 				token = 'ERRO'
 				return {'token':token, 'causa':'Não identificado'}
 
 x = '1'
 
+#print(fonte)
+
 while (x is not 'EOF'):
 	tupla = leToken()
 	x = tupla['token']
 
-	if('tipo' in tupla):
-		print('Token: {}\tLexema: {}\t\tTipo: {}'.format(tupla['token'], tupla['lexema'], tupla['tipo']))
-	elif('lexema' in tupla):
-		print('Token: {}\tLexema: {}'.format(tupla['token'], tupla['lexema']))
-	elif('cause' in tupla):
-		print('Token: {}\tCausa: {}'.format(tupla['token'], tupla['causa']))
-	elif('token' in tupla):
-		print('Token: {}\t'.format(tupla['token']))
+	print('Token: {}\tLexema: {}\t\tTipo: {}'.format(tupla['token'], tupla['lexema'], tupla['tipo']))
