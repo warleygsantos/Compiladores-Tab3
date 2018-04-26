@@ -60,10 +60,12 @@ tabela = {
 linha 	= 0
 coluna	= 0
 x 		= '1'
+tell	= 0
 
 def leToken():
 	global linha
 	global coluna
+	global tell
 
 	continua	= True
 	estado 		= 0
@@ -74,7 +76,9 @@ def leToken():
 
 	while(continua):
 		c = file.read(1)
+		tell = tell + 1
 		buffe = c
+		#print("Leu {}".format(buffe))
 
 		if(c is ''):
 			c = 'EOF'
@@ -88,9 +92,15 @@ def leToken():
 			lexema = lexema + buffe
 			coluna = coluna + 1
 		except Exception:
+			#print("Exception em {}". format(c))
 			continua = False
 			if (c is not 'EOF'):
-				file.seek(file.tell() - 1)
+				value = tell
+				file.seek(tell - 1)
+				tell = tell - 1
+				#print("{} -> {}".format(value, file.tell()))
+		#	else:
+				#print("nao voltou")
 			if utilitarios.isFinalState(estado):
 				token = tokens[estado]
 				if(token in ('Num', 'Literal', 'id')):
