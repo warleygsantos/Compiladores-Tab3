@@ -5,7 +5,7 @@ FORMAT = '%(asctime)s %(levelname)s:%(name)s:%(lineno)s\t-> %(message)s'
 logging.basicConfig(filename='analisador-lexico.log',level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
 
 logging.info('Beging')
-file = open('FONTE.ALG', 'rU')
+file = open('FONTE.ALG', 'r')
 
 tokens = {
 	1: 'Literal', 2: 'id', 3: 'Comentário', 4: 'EOF', 5:'OPR', 6:'OPR', 7:'OPR', 8:'RCB', 9:'OPM', 10:'AB_P', 11:'FC_P',
@@ -88,22 +88,24 @@ def leToken():
 			lexema = lexema + buffe
 			coluna = coluna + 1
 			tell = tell + 1
-		#	if(c is '\n'):
-			#	tell = tell + 1
+			###
+			if(c is '\n'):
+				tell = tell + 1
+			###
 		except Exception:
 			continua = False
 			if (c is not 'EOF'):
-				file.seek(file.tell()-1)
+#				file.seek(file.tell() - 1) # tell() retorna valores estranhos quando le em \n. Issue432373 para mais detalhes.
+				file.seek(tell)
 			if utilitarios.isFinalState(estado):
 				token = tokens[estado]
-				print("[{} {} - {}   {}]".format(linha, coluna, token, tell))
 				if(token in ('Num', 'Literal', 'id')):
 					tipo = 'Nao definido'
 					logging.info('Token: {}\tLexema: {}\tTipo: {}'.format(token, lexema, tipo))
-					return {'token':token, 'lexema':lexema, 'tipo':tipo}
+					return {'token':token, 'lexema':lexema, 'tipo':tipo, 'linha':linha}
 				elif(token in ('OPR', 'RCB', 'OPM', 'AB_P', 'FC_P', 'PT_V')):
 					logging.info('Token: {}\tLexema: {}'.format(token, lexema))
-					return {'token':token, 'lexema':lexema}
+					return {'token':token, 'lexema':lexema, 'linha':linha}
 				elif(token in ('Comentário', 'Tab', 'Salto', 'Espaço')):
 					logging.info('Token {} ignorado'.format(token))
 					if(token is 'Salto'):
@@ -112,10 +114,10 @@ def leToken():
 					return leToken()
 				elif(token in ('EOF')):
 					logging.info('Final de arquivo')
-					return {'token':token}
+					return {'token':token, 'linha':linha}
 			else:
 				token = 'ERRO'
-				return {'token':token, 'causa':'Não identificado'}
+				return {'token':token, 'causa':'Não identificado', 'linha':linha}
 
 x = '1'
 
@@ -124,10 +126,10 @@ while (x is not 'EOF'):
 	x = tupla['token']
 
 	if('tipo' in tupla):
-		print('Token: {}\tLexema: {}\t\tTipo: {}'.format(tupla['token'], tupla['lexema'], tupla['tipo']))
+		print('linha: {}\tToken: {}\tLexema: {}\t\tTipo: {}'.format(tupla['linha'], tupla['token'], tupla['lexema'], tupla['tipo']))
 	elif('lexema' in tupla):
-		print('Token: {}\tLexema: {}'.format(tupla['token'], tupla['lexema']))
+		print('linha: {}\tToken: {}\tLexema: {}'.format(tupla['linha'], tupla['token'], tupla['lexema']))
 	elif('cause' in tupla):
-		print('Token: {}\tCausa: {}'.format(tupla['token'], tupla['causa']))
+		print('linha: {}\tToken: {}\tCausa: {}'.format(tupla['linha'], tupla['token'], tupla['causa']))
 	elif('token' in tupla):
-		print('Token: {}\t'.format(tupla['token']))
+		print('linha: {}\tToken: {}\t'.format(tupla['linha'], tupla['token']))
