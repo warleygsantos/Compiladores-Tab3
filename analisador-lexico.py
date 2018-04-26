@@ -5,7 +5,7 @@ FORMAT = '%(asctime)s %(levelname)s:%(name)s:%(lineno)s\t-> %(message)s'
 logging.basicConfig(filename='analisador-lexico.log',level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
 
 logging.info('Beging')
-file = open('FONTE.ALG', 'r')
+file = open('FONTE.ALG', 'rU')
 
 tokens = {
 	1: 'Literal', 2: 'id', 3: 'Comentário', 4: 'EOF', 5:'OPR', 6:'OPR', 7:'OPR', 8:'RCB', 9:'OPM', 10:'AB_P', 11:'FC_P',
@@ -76,7 +76,6 @@ def leToken():
 	while(continua):
 		c = file.read(1)
 		buffe = c
-		print("entrada: {}".format(c))
 		if(c is ''):
 			c = 'EOF'
 			buffe = c
@@ -89,11 +88,12 @@ def leToken():
 			lexema = lexema + buffe
 			coluna = coluna + 1
 			tell = tell + 1
+		#	if(c is '\n'):
+			#	tell = tell + 1
 		except Exception:
 			continua = False
 			if (c is not 'EOF'):
-				file.seek(tell)
-
+				file.seek(file.tell()-1)
 			if utilitarios.isFinalState(estado):
 				token = tokens[estado]
 				print("[{} {} - {}   {}]".format(linha, coluna, token, tell))
