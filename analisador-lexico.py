@@ -133,7 +133,7 @@ def leToken():
 				return {'token':token, 'lexema':lexema, 'tipo':tipo}
 			else:
 				token = 'ERRO'
-				return {'token':token, 'causa':'Não identificado', 'lexema':lexema, 'tipo':tipo}
+				return {'token':token, 'tipo':'Não identificado', 'lexema':lexema}
 x = '1'
 
 while (x is not 'EOF' and x is not 'ERRO'):
