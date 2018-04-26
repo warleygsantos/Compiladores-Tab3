@@ -57,9 +57,8 @@ tabela = {
 		{'D':15}
 }
 
-linha 	= 0
+linha 	= 1
 coluna	= 0
-x 		= '1'
 tell	= 0
 
 def leToken():
@@ -76,9 +75,8 @@ def leToken():
 
 	while(continua):
 		c = file.read(1)
-		tell = tell + 1
+		coluna = coluna + 1
 		buffe = c
-		#print("Leu {}".format(buffe))
 
 		if(c is ''):
 			c = 'EOF'
@@ -91,16 +89,12 @@ def leToken():
 			estado = tabela[estado][c]
 			lexema = lexema + buffe
 			coluna = coluna + 1
+			tell = tell + 1
 		except Exception:
-			#print("Exception em {}". format(c))
 			continua = False
 			if (c is not 'EOF'):
-				value = tell
-				file.seek(tell - 1)
-				tell = tell - 1
-				#print("{} -> {}".format(value, file.tell()))
-		#	else:
-				#print("nao voltou")
+				file.seek(tell)
+
 			if utilitarios.isFinalState(estado):
 				token = tokens[estado]
 				if(token in ('Num', 'Literal', 'id')):
@@ -120,6 +114,8 @@ def leToken():
 				token = 'ERRO'
 				return {'token':token, 'causa':'Não identificado'}
 
+x = '1'
+
 while (x is not 'EOF'):
 	tupla = leToken()
 	x = tupla['token']
@@ -132,4 +128,3 @@ while (x is not 'EOF'):
 		print('Token: {}\tCausa: {}'.format(tupla['token'], tupla['causa']))
 	elif('token' in tupla):
 		print('Token: {}\t'.format(tupla['token']))
-	#logging.info(x)
