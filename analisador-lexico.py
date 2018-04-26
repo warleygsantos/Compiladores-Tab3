@@ -57,13 +57,9 @@ tabela = {
 		{'D':15}
 }
 
-linha 	= 1
-coluna	= 0
 tell	= 0
 
 def leToken():
-	global linha
-	global coluna
 	global tell
 
 	continua	= True
@@ -71,8 +67,6 @@ def leToken():
 	token 		= ''
 	lexema 		= ''
 	tipo 		= ''
-	coluna		= 0
-
 	while(continua):
 		c = file.read(1)
 		buffe = c
@@ -86,12 +80,7 @@ def leToken():
 		try:
 			estado = tabela[estado][c]
 			lexema = lexema + buffe
-			coluna = coluna + 1
 			tell = tell + 1
-			###
-			if(c is '\n'):
-				tell = tell + 1
-			###
 		except Exception:
 			continua = False
 			if (c is not 'EOF'):
@@ -102,22 +91,19 @@ def leToken():
 				if(token in ('Num', 'Literal', 'id')):
 					tipo = 'Nao definido'
 					logging.info('Token: {}\tLexema: {}\tTipo: {}'.format(token, lexema, tipo))
-					return {'token':token, 'lexema':lexema, 'tipo':tipo, 'linha':linha}
+					return {'token':token, 'lexema':lexema, 'tipo':tipo}
 				elif(token in ('OPR', 'RCB', 'OPM', 'AB_P', 'FC_P', 'PT_V')):
 					logging.info('Token: {}\tLexema: {}'.format(token, lexema))
-					return {'token':token, 'lexema':lexema, 'linha':linha}
+					return {'token':token, 'lexema':lexema}
 				elif(token in ('Comentário', 'Tab', 'Salto', 'Espaço')):
 					logging.info('Token {} ignorado'.format(token))
-					if(token is 'Salto'):
-						linha = linha + 1
-						coluna = 0
 					return leToken()
 				elif(token in ('EOF')):
 					logging.info('Final de arquivo')
-					return {'token':token, 'linha':linha}
+					return {'token':token}
 			else:
 				token = 'ERRO'
-				return {'token':token, 'causa':'Não identificado', 'linha':linha}
+				return {'token':token, 'causa':'Não identificado'}
 
 x = '1'
 
@@ -126,10 +112,10 @@ while (x is not 'EOF'):
 	x = tupla['token']
 
 	if('tipo' in tupla):
-		print('linha: {}\tToken: {}\tLexema: {}\t\tTipo: {}'.format(tupla['linha'], tupla['token'], tupla['lexema'], tupla['tipo']))
+		print('Token: {}\tLexema: {}\t\tTipo: {}'.format(tupla['token'], tupla['lexema'], tupla['tipo']))
 	elif('lexema' in tupla):
-		print('linha: {}\tToken: {}\tLexema: {}'.format(tupla['linha'], tupla['token'], tupla['lexema']))
+		print('Token: {}\tLexema: {}'.format(tupla['token'], tupla['lexema']))
 	elif('cause' in tupla):
-		print('linha: {}\tToken: {}\tCausa: {}'.format(tupla['linha'], tupla['token'], tupla['causa']))
+		print('Token: {}\tCausa: {}'.format(tupla['token'], tupla['causa']))
 	elif('token' in tupla):
-		print('linha: {}\tToken: {}\t'.format(tupla['linha'], tupla['token']))
+		print('Token: {}\t'.format(tupla['token']))
