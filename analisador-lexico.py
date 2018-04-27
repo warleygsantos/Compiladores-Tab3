@@ -14,6 +14,23 @@ tokens = {
 	12:'PT_V', 13:'Num', 14:'Num', 15:'Num', 21:'Tab', 22:'Salto', 23:'Espaço'
 }
 
+tabelaID = {
+	#lexema e a chave
+	'inicio'	: {'token':'inicio', 	'tipo':''},
+	'varinicio'	: {'token':'varinicio', 'tipo':''},
+	'varfim'	: {'token':'varfim', 	'tipo':''},
+	'escreva'	: {'token':'escreva',	'tipo':''},
+	'leia'		: {'token':'leia', 		'tipo':''},
+	'se'		: {'token':'se', 		'tipo':''},
+	'entao'		: {'token':'entao', 	'tipo':''},
+	'senao'		: {'token':'senao', 	'tipo':''},
+	'fimse'		: {'token':'fimse', 	'tipo':''},
+	'fim'		: {'token':'fim', 		'tipo':''},
+	'inteiro'	: {'token':'inteiro', 	'tipo':''},
+	'literal'	: {'token':'literal',	'tipo':''},
+	'real'		: {'token':'real', 		'tipo':''}
+}
+
 tabela = {
 	#Corresponte a tabela de transições do DFA.
 	#
@@ -98,16 +115,18 @@ tabela = {
 
 tell	= 0
 nLinhas = 1
-
+nColuna 	= 1
 def leToken():
 	global tell
 	global nLinhas
+	global nColuna
 
 	continua	= True
 	estado 		= 0
 	token 		= ''
 	lexema 		= ''
 	tipo 		= ''
+
 	while(continua):
 		if(tell < len(fonte)):
 			c = fonte[tell]
@@ -124,8 +143,10 @@ def leToken():
 			estado = disc[c]
 			lexema = lexema + buffe
 			tell = tell + 1
+			nColuna = nColuna + 1
 			if (c is '\n'):
 				nLinhas = nLinhas + 1
+				nColuna = 1
 		else:
 			tipo = nLinhas
 			continua = False
@@ -138,13 +159,21 @@ def leToken():
 				return {'token':token, 'lexema':lexema, 'tipo':tipo}
 			else:
 				token = 'ERRO'
-				tipo = "Erro na linha: {}".format(nLinhas)
+				tipo = "Erro na linha: {}, Coluna: {}".format(nLinhas, nColuna)
 				logging.info('Token: {}\tLexema: {}\tTipo: {}'.format(token, lexema, tipo))
 				return {'token':token, 'tipo':tipo, 'lexema':lexema}
-x = '1'
 
+x = '1'
 while (x is not 'EOF' and x is not 'ERRO'):
 	tupla = leToken()
 	x = tupla['token']
 
 	print('Token: {}\tLexema: {}\t\tTipo: {}'.format(tupla['token'], tupla['lexema'], tupla['tipo']))
+
+	if(tupla['token'] is 'id'):
+		print("E ID")
+		if(tupla['lexema'] not in tabelaID):
+			tabelaID[tupla['lexema']] = {'token':tupla['token'], 'tipo':tupla['tipo']}
+
+for keys, values in tabelaID.items():
+	print ('Token: {}\tLexema:{}\tTipo:{}'.format(values['token'], keys, values['tipo']))
