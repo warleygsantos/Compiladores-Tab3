@@ -10,8 +10,24 @@ file = open('FONTE.ALG', 'r')
 fonte = file.read()
 
 tokens = {
-	1: 'Literal', 2: 'id', 3: 'Comentário', 4: 'EOF', 5:'OPR', 6:'OPR', 7:'OPR', 8:'RCB', 9:'OPM', 10:'AB_P', 11:'FC_P',
-	12:'PT_V', 13:'Num', 14:'Num', 15:'Num', 21:'Tab', 22:'Salto', 23:'Espaço'
+	1: 'Literal',
+	2: 'id',
+	3: 'Comentário',
+	4: 'EOF',
+	5:'OPR',
+	6:'OPR',
+	7:'OPR',
+	8:'RCB',
+	9:'OPM',
+	10:'AB_P',
+	11:'FC_P',
+	12:'PT_V',
+	13:'Num',
+	14:'Num',
+	15:'Num',
+	21:'Tab',
+	22:'Salto',
+	23:'Espaço'
 }
 
 tabelaID = {
