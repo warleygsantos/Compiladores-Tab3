@@ -2,7 +2,7 @@ import logging
 import utilitarios
 
 FORMAT = '%(asctime)s %(levelname)s:%(name)s:%(lineno)s\t-> %(message)s'
-logging.basicConfig(filename='analisador-lexico.log',level=logging.INFO,format=FORMAT, datefmt='%H:%M:%S')
+logging.basicConfig(filename='analisador-lexico.log',level=logging.INFO,format=FORMAT, datefmt='%d-%m %H:%M:%S')
 
 logging.info('Beging')
 file = open('FONTE.ALG', 'r')
@@ -31,7 +31,7 @@ tokens = {
 }
 
 tabelaID = {
-	#lexema e a chave
+	#lexema eh a chave para acessar os registros
 	'inicio'	: {'token':'inicio', 	'tipo':''},
 	'varinicio'	: {'token':'varinicio', 'tipo':''},
 	'varfim'	: {'token':'varfim', 	'tipo':''},
@@ -49,19 +49,39 @@ tabelaID = {
 
 tabela = {
 	#Corresponte a tabela de transições do DFA.
-	#
-	#Estados que não possuem regra de transição não tem nescessidade de estar na tabela.
 	0:
 		#Transicoes do Estado Inicial. {'CARACTER_LIDO' : NOVO_ESTADO}
-		{'	':21, ' ':23, '\n':22, '"':16, 'L':2, 'D':13, '{':17, 'EOF':4, '=':5, '<':6, '>':7, '-':9, '+':9, '*':9,
-		'/':9, '(':10, ')':11, ';':12},
+		{
+			'	'	:21,
+			' '		:23,
+			'\n'	:22,
+			'"'		:16,
+			'L'		:2,
+			'D'		:13,
+			'{'		:17,
+			'EOF'	:4,
+			'='		:5,
+			'<'		:6,
+			'>'		:7,
+			'-'		:9,
+			'+'		:9,
+			'*'		:9,
+			'/'		:9,
+			'('		:10,
+			')'		:11,
+			';'		:12
+		},
 
 	1:
 		#Transicoes do estado 1. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{},
 	2:
 		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
-		{'L':2, 'D':2, '_':2},
+		{
+			'L':2,
+			'D':2,
+			'_':2
+		},
 	3:
 		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{},
@@ -73,10 +93,15 @@ tabela = {
 		{},
 	6:
 		#Transicoes do estado 6. {'CARACTER_LIDO' : NOVO_ESTADO}
-		{'=':5, '-':8},
+		{
+			'=':5,
+			'-':8
+		},
 	7:
 		#Transicoes do estado 7. {'CARACTER_LIDO' : NOVO_ESTADO}
-		{'=':5},
+		{
+			'=':5
+		},
 	8:
 		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{},
@@ -94,30 +119,97 @@ tabela = {
 		{},
 	13:
 		#Transicoes do estado 13. {'CARACTER_LIDO' : NOVO_ESTADO}
-		{'.':18, 'D':13, 'e':19, 'E':19},
+		{
+			'.':18,
+			'D':13,
+			'e':19,
+			'E':19
+		},
 	14:
 		#Transicoes do estado 14. {'CARACTER_LIDO' : NOVO_ESTADO}
-		{'D':14, 'e':14, 'E':14},
+		{
+			'D':14,
+			'e':14,
+			'E':14
+		},
 	15:
 		#Transicoes do estado 15. {'CARACTER_LIDO' : NOVO_ESTADO}
-		{'D':15},
+		{
+			'D':15
+		},
 	16:
 		#Transicoes do estado 16. {'CARACTER_LIDO' : NOVO_ESTADO}
-		{'	':16, ' ':16, '\n':16, '"':1, '.':16, 'L':16, 'D':16, '_':16, '{':16, '}':16, '=':16, '<':16, '>':16,
-		'-':16, '+':16,	'*':16, '/':16, '(':16, ')':16, ';':16, 'e':16, 'E':16, ':':16, '\\':16},
+		{
+			'	'	:16,
+			' '		:16,
+			'\n'	:16,
+			'"'		:1,
+			'.'		:16,
+			'L'		:16,
+			'D'		:16,
+			'_'		:16,
+			'{'		:16,
+			'}'		:16,
+			'='		:16,
+			'<'		:16,
+			'>'		:16,
+			'-'		:16,
+			'+'		:16,
+			'*'		:16,
+			'/'		:16,
+			'('		:16,
+			')'		:16,
+			';'		:16,
+			'e'		:16,
+			'E'		:16,
+			':'		:16,
+			'\\'	:16
+		},
 	17:
 		#Transicoes do estado 17. {'CARACTER_LIDO' : NOVO_ESTADO}
-		{'	':17, ' ':17, '\n':17, '"':17, '.':17, 'L':17, 'D':17, '_':17, '{':17, '}':3, '=':17, '<':17, '>':17,
-		'-':17, '+':17,	'*':17, '/':17, '(':17, ')':17, ';':17, 'e':17, 'E':17, ':':17, '\\':17},
+		{
+			'	'	:17,
+			' '		:17,
+			'\n'	:17,
+			'"'		:17,
+			'.'		:17,
+			'L'		:17,
+			'D'		:17,
+			'_'		:17,
+			'{'		:17,
+			'}'		:3,
+			'='		:17,
+			'<'		:17,
+			'>'		:17,
+			'-'		:17,
+			'+'		:17,
+			'*'		:17,
+			'/'		:17,
+			'('		:17,
+			')'		:17,
+			';'		:17,
+			'e'		:17,
+			'E'		:17,
+			':'		:17,
+			'\\'	:17
+		},
 	18:
 		#Transicoes do estado 18. {'CARACTER_LIDO' : NOVO_ESTADO}
-		{'D':14},
+		{
+			'D':14
+		},
 	19:
 		#Transicoes do estado 19. {'CARACTER_LIDO' : NOVO_ESTADO}
-		{'D':15, '-':20, '+':20},
+		{
+			'D':15,
+			'-':20,
+			'+':20
+		},
 	20:
 		#Transicoes do estado 20. {'CARACTER_LIDO' : NOVO_ESTADO}
-		{'D':15},
+		{
+			'D':15
+		},
 	21:
 		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
 		{},
@@ -164,19 +256,18 @@ def leToken():
 				nLinhas = nLinhas + 1
 				nColuna = 1
 		else:
-			tipo = nLinhas
 			continua = False
 			if utilitarios.isFinalState(estado):
 				token = tokens[estado]
 				if(token in ('Comentário', 'Tab', 'Salto', 'Espaço')):
-					logging.info('Token {} ignorado'.format(token))
+					logging.info('Ignorou token {}'.format(token))
 					return leToken()
-				logging.info('Token: {}\tLexema: {}\tTipo: {}'.format(token, lexema, tipo))
+				logging.info('Token:{:<20}tLexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
 				return {'token':token, 'lexema':lexema, 'tipo':tipo}
 			else:
 				token = 'ERRO'
 				tipo = "Erro na linha: {}, Coluna: {}".format(nLinhas, nColuna)
-				logging.info('Token: {}\tLexema: {}\tTipo: {}'.format(token, lexema, tipo))
+				logging.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
 				return {'token':token, 'tipo':tipo, 'lexema':lexema}
 
 x = '1'
@@ -184,12 +275,14 @@ while (x is not 'EOF' and x is not 'ERRO'):
 	tupla = leToken()
 	x = tupla['token']
 
-	print('Token: {}\tLexema: {}\t\tTipo: {}'.format(tupla['token'], tupla['lexema'], tupla['tipo']))
+	print('Token:{:<12}Lexema:{:<20}Tipo:{}'.format(tupla['token'], tupla['lexema'], tupla['tipo']))
+	if((tupla['token'] is 'id') and (tupla['lexema'] not in tabelaID)):
+		#Se o token for 'id' e o lexema correspondente nao estiver na tabela
+		tabelaID[tupla['lexema']] = {'token':tupla['token'], 'tipo':tupla['tipo']}
 
-	if(tupla['token'] is 'id'):
-		print("E ID")
-		if(tupla['lexema'] not in tabelaID):
-			tabelaID[tupla['lexema']] = {'token':tupla['token'], 'tipo':tupla['tipo']}
-
+print('{:_^40}'.format(''))
+print ('|{:^12}|{:^12}|{:^12}|'.format('TOKEN', 'LEXEMA', 'TIPO'))
+print('{:-^40}'.format(''))
 for keys, values in tabelaID.items():
-	print ('Token: {}\tLexema:{}\tTipo:{}'.format(values['token'], keys, values['tipo']))
+	print ('|{:12}|{:12}|{:12}|'.format(values['token'], keys, values['tipo']))
+print('{:-^40}'.format(''))
