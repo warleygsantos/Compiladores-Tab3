@@ -6,8 +6,9 @@ logging.basicConfig(filename='analisador-lexico.log',level=logging.INFO,format=F
 
 logging.info('Beging')
 
+################################################## TABLES DEFINITION ###################################################
 tokens = {
-	#Matching STATE and TOCKEN.
+	#Matching STATE and TOKEN.
 	1:'Literal',
 	2:'id',
 	3:'Comentário',
@@ -216,7 +217,7 @@ transitionsTable = {
 }
 
 error = {
-	#
+	#Error mapping table.
 	0:
 		'Simbolo disperso.',
 	16:
@@ -231,15 +232,16 @@ error = {
 		'Constante numerica esperada.',
 }
 
-#Open and read the source code file.
-file = open('FONTE.ALG', 'r')
-sourceCode = file.read()
+################################################# STATIC VARIABLES #####################################################
+tell	= 0 #Current position of reading the source code file.
+nRow 	= 1 #Current line of the source file. Used to return error.
+nColumn = 1 #Current column of the source file. Used to return error.
 
-tell	= 0 #Current position of the source file.
-nRow 	= 1 #Current line of the source file.
-nColumn = 1 #Current column of the source file.
-
-def leToken():
+###################################################### THE CODE ########################################################
+def leToken(sourceCode):
+	'''
+	Retorna VERDADEIRO caso o caracter lido for uma letra. Caso contrário FALSO.
+	'''
 	global tell
 	global nRow
 	global nColumn
@@ -267,14 +269,14 @@ def leToken():
 
 		disc = transitionsTable[estado]
 		if(c in disc or ((estado is 16 or estado is 17) and c is not 'EOF')):
-			#If transition is valid update values of the lexeme string, tell, nComunm and nRows.
+			#If transition is valid: Change state and update values of the lexeme string, tell, nComunm and nRows.
 			if(estado is not 16 and estado is not 17):
+				#See the transitions table and get new state.
 				estado = disc[c]
 			else:
+				#Keep the states 16 and 17 (constant literal and comment) in unexpected symbols.
 				estado = disc.get(c, estado)
-
 			lexema = lexema + buffe
-
 			tell = tell + 1
 			nColumn = nColumn + 1
 			if (c is '\n'):
@@ -283,13 +285,13 @@ def leToken():
 			if(c is '\t'):
 				nColumn = nColumn + 3
 		else:
-			#Ignore or return accept or reject.
+			#Ignore or return: accept or reject.
 			continua = False
 			if utilitarios.isFinalState(estado):
 				token = tokens[estado]
 				if(token in ('Comentário', 'Tab', 'Salto', 'Espaço')):
 					logging.info('Ignorou token {}'.format(token))
-					return leToken()
+					return leToken(sourceCode)
 				logging.info('Token:{:<20}tLexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
 				return {'token':token, 'lexema':lexema, 'tipo':tipo}
 			else:
@@ -298,6 +300,11 @@ def leToken():
 				logging.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
 				return {'token':token, 'tipo':tipo, 'lexema':lexema}
 
+########################################################################################################################
+
+#Open and read the source code file.
+file = open('FONTE.ALG', 'r')
+sourceCode = file.read()
 
 print('{:_^68}'.format(''))
 print ('|{:^12}|{:^40}|{:^12}|'.format('TOKEN', 'LEXEMA', 'TIPO'))
@@ -305,7 +312,7 @@ print('|{:-^66}|'.format(''))
 
 token = 'continue'
 while (token is not 'EOF' and token is not 'ERRO'):
-	tupla = leToken()
+	tupla = leToken(sourceCode)
 
 	token 	= tupla['token']
 	lexema 	= tupla['lexema']
