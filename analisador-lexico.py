@@ -8,10 +8,10 @@ logging.info('Beging')
 
 tokens = {
 	#Matching STATE and TOCKEN.
-	1: 'Literal',
-	2: 'id',
-	3: 'Comentário',
-	4: 'EOF',
+	1:'Literal',
+	2:'id',
+	3:'Comentário',
+	4:'EOF',
 	5:'OPR',
 	6:'OPR',
 	7:'OPR',
@@ -219,6 +219,22 @@ transitionsTable = {
 		{}
 }
 
+error = {
+	#
+	0:
+		'Simbolo disperso.',
+	16:
+		'Constante literal nao terminada.',
+	17:
+		'Comentario nao terminado.',
+	18:
+		'Constante numerica esperada.',
+	19:
+		'Constante numerica esperada.',
+	20:
+		'Constante numerica esperada.',
+}
+
 #Open and read the source code file.
 file = open('FONTE.ALG', 'r')
 sourceCode = file.read()
@@ -263,6 +279,8 @@ def leToken():
 			if (c is '\n'):
 				nRow = nRow + 1
 				nColumn = 1
+			if(c is '\t'):
+				nColumn = nColumn + 3
 		else:
 			#Ignore or return accept or reject.
 			continua = False
@@ -275,14 +293,14 @@ def leToken():
 				return {'token':token, 'lexema':lexema, 'tipo':tipo}
 			else:
 				token = 'ERRO'
-				tipo = "Erro na linha: {}, Coluna: {}".format(nRow, nColumn)
+				tipo = "Erro na linha: {}, Coluna: {} - {}".format(nRow, nColumn, error[estado])
 				logging.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
 				return {'token':token, 'tipo':tipo, 'lexema':lexema}
 
 
-print('\t{:_^52}'.format(''))
-print ('\t|{:^12}|{:^24}|{:^12}|'.format('TOKEN', 'LEXEMA', 'TIPO'))
-print('\t|{:-^50}|'.format(''))
+print('{:_^68}'.format(''))
+print ('|{:^12}|{:^40}|{:^12}|'.format('TOKEN', 'LEXEMA', 'TIPO'))
+print('|{:-^66}|'.format(''))
 
 token = 'continue'
 while (token is not 'EOF' and token is not 'ERRO'):
@@ -296,10 +314,13 @@ while (token is not 'EOF' and token is not 'ERRO'):
 		if (lexema not in idTable):
 			#Se o toke for 'id' e o lexema correspondente nao estiver na tabela
 			idTable[lexema] = {'token':token, 'tipo':tipo}
-			print('\t|{:12}|{:24}|{:12}|'.format(token, lexema, tipo))
 		else:
 			into = idTable.get(lexema)
-			print('\t|{:12}|{:24}|{:12}|'.format(into['token'], lexema, into['tipo']))
+			token = into['token']
+			tipo = into['tipo']
 	else:
-		print('\t|{:12}|{:24}|{:12}|'.format(tupla['token'], lexema, tupla['tipo']))
-print('\t{:-^52}'.format(''))
+		token = tupla['token']
+		tipo = tupla['tipo']
+	lexema = lexema.replace("\n", " ")
+	print('|{:12}|{:40}|{:12}|'.format(token, lexema, tipo))
+print('{:-^68}'.format(''))
