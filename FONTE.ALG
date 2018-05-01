@@ -5,7 +5,7 @@ inicio
 		D inteiro;
 		C real;
 	varfim;
-
+.
 	escreva "Digite B";
 	leia B;
 	escreva "Digite A:";
@@ -30,6 +30,5 @@ inicio
 	escreva C;
 	escreva "\n";
 	escreva A;
-
 
 fim
