@@ -266,7 +266,7 @@ def leToken():
 			c = 'D'
 
 		disc = transitionsTable[estado]
-		if(((c in disc) or (estado is 16) or (estado is 17)) and c is not 'EOF'):
+		if(c in disc or ((estado is 16 or estado is 17) and c is not 'EOF')):
 			#If transition is valid update values of the lexeme string, tell, nComunm and nRows.
 			if(estado is not 16 and estado is not 17):
 				estado = disc[c]
