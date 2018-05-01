@@ -5,11 +5,9 @@ FORMAT = '%(asctime)s %(levelname)s:%(name)s:%(lineno)s\t-> %(message)s'
 logging.basicConfig(filename='analisador-lexico.log',level=logging.INFO,format=FORMAT, datefmt='%d-%m %H:%M:%S')
 
 logging.info('Beging')
-file = open('FONTE.ALG', 'r')
-
-fonte = file.read()
 
 tokens = {
+	#Matching STATE and TOCKEN.
 	1: 'Literal',
 	2: 'id',
 	3: 'Comentário',
@@ -30,8 +28,8 @@ tokens = {
 	23:'Espaço'
 }
 
-tabelaID = {
-	#lexema eh a chave para acessar os registros
+idTable = {
+	#Lexeme is the key.
 	'inicio'	: {'token':'inicio', 	'tipo':''},
 	'varinicio'	: {'token':'varinicio', 'tipo':''},
 	'varfim'	: {'token':'varfim', 	'tipo':''},
@@ -47,10 +45,10 @@ tabelaID = {
 	'real'		: {'token':'real', 		'tipo':''}
 }
 
-tabela = {
-	#Corresponte a tabela de transições do DFA.
+transitionsTable = {
+	#Transition table.
 	0:
-		#Transicoes do Estado Inicial. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#Initial state transitions. {'CHARACTER' : NEW_STATE}
 		{
 			'	'	:21,
 			' '		:23,
@@ -73,52 +71,52 @@ tabela = {
 		},
 
 	1:
-		#Transicoes do estado 1. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 1. {'CHARACTER' : NEW_STATE}
 		{},
 	2:
-		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 2. {'CHARACTER' : NEW_STATE}
 		{
 			'L':2,
 			'D':2,
 			'_':2
 		},
 	3:
-		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 2. {'CHARACTER' : NEW_STATE}
 		{},
 	4:
-		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 2. {'CHARACTER' : NEW_STATE}
 		{},
 	5:
-		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 2. {'CHARACTER' : NEW_STATE}
 		{},
 	6:
-		#Transicoes do estado 6. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 6. {'CHARACTER' : NEW_STATE}
 		{
 			'=':5,
 			'-':8
 		},
 	7:
-		#Transicoes do estado 7. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 7. {'CHARACTER' : NEW_STATE}
 		{
 			'=':5
 		},
 	8:
-		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 2. {'CHARACTER' : NEW_STATE}
 		{},
 	9:
-		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 2. {'CHARACTER' : NEW_STATE}
 		{},
 	10:
-		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 2. {'CHARACTER' : NEW_STATE}
 		{},
 	11:
-		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 2. {'CHARACTER' : NEW_STATE}
 		{},
 	12:
-		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 2. {'CHARACTER' : NEW_STATE}
 		{},
 	13:
-		#Transicoes do estado 13. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 13. {'CHARACTER' : NEW_STATE}
 		{
 			'.':18,
 			'D':13,
@@ -126,19 +124,19 @@ tabela = {
 			'E':19
 		},
 	14:
-		#Transicoes do estado 14. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 14. {'CHARACTER' : NEW_STATE}
 		{
 			'D':14,
 			'e':14,
 			'E':14
 		},
 	15:
-		#Transicoes do estado 15. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 15. {'CHARACTER' : NEW_STATE}
 		{
 			'D':15
 		},
 	16:
-		#Transicoes do estado 16. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 16. {'CHARACTER' : NEW_STATE}
 		{
 			'	'	:16,
 			' '		:16,
@@ -166,7 +164,7 @@ tabela = {
 			'\\'	:16
 		},
 	17:
-		#Transicoes do estado 17. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 17. {'CHARACTER' : NEW_STATE}
 		{
 			'	'	:17,
 			' '		:17,
@@ -194,40 +192,45 @@ tabela = {
 			'\\'	:17
 		},
 	18:
-		#Transicoes do estado 18. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 18. {'CHARACTER' : NEW_STATE}
 		{
 			'D':14
 		},
 	19:
-		#Transicoes do estado 19. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 19. {'CHARACTER' : NEW_STATE}
 		{
 			'D':15,
 			'-':20,
 			'+':20
 		},
 	20:
-		#Transicoes do estado 20. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 20. {'CHARACTER' : NEW_STATE}
 		{
 			'D':15
 		},
 	21:
-		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 21. {'CHARACTER' : NEW_STATE}
 		{},
 	22:
-		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 22. {'CHARACTER' : NEW_STATE}
 		{},
 	23:
-		#Transicoes do estado 2. {'CARACTER_LIDO' : NOVO_ESTADO}
+		#State transitions 23. {'CHARACTER' : NEW_STATE}
 		{}
 }
 
-tell	= 0
-nLinhas = 1
-nColuna 	= 1
+#Open and read the source code file.
+file = open('FONTE.ALG', 'r')
+sourceCode = file.read()
+
+tell	= 0 #Current position of the source file.
+nRow 	= 1 #Current line of the source file.
+nColumn = 1 #Current column of the source file.
+
 def leToken():
 	global tell
-	global nLinhas
-	global nColuna
+	global nRow
+	global nColumn
 
 	continua	= True
 	estado 		= 0
@@ -236,26 +239,32 @@ def leToken():
 	tipo 		= ''
 
 	while(continua):
-		if(tell < len(fonte)):
-			c = fonte[tell]
+		if(tell < len(sourceCode)):
+			#Read character by character and check if is EOF.
+			c = sourceCode[tell]
 		else:
 			c = 'EOF'
 		buffe = c
+
 		if (utilitarios.isLiteral(c)):
+			#Check if is literal.
 			c = 'L'
 		elif (utilitarios.isNumeral(c)):
+			#Check if is numeric.
 			c = 'D'
 
-		disc = tabela[estado]
+		disc = transitionsTable[estado]
 		if(c in disc):
+			#If transition is valid update values of the lexeme string, tell, nComunm and nRows.
 			estado = disc[c]
 			lexema = lexema + buffe
 			tell = tell + 1
-			nColuna = nColuna + 1
+			nColumn = nColumn + 1
 			if (c is '\n'):
-				nLinhas = nLinhas + 1
-				nColuna = 1
+				nRow = nRow + 1
+				nColumn = 1
 		else:
+			#Ignore or return accept or reject.
 			continua = False
 			if utilitarios.isFinalState(estado):
 				token = tokens[estado]
@@ -266,9 +275,10 @@ def leToken():
 				return {'token':token, 'lexema':lexema, 'tipo':tipo}
 			else:
 				token = 'ERRO'
-				tipo = "Erro na linha: {}, Coluna: {}".format(nLinhas, nColuna)
+				tipo = "Erro na linha: {}, Coluna: {}".format(nRow, nColumn)
 				logging.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
 				return {'token':token, 'tipo':tipo, 'lexema':lexema}
+
 
 print('\t{:_^52}'.format(''))
 print ('\t|{:^12}|{:^24}|{:^12}|'.format('TOKEN', 'LEXEMA', 'TIPO'))
@@ -283,12 +293,12 @@ while (token is not 'EOF' and token is not 'ERRO'):
 	tipo 	= tupla['tipo']
 
 	if(token is 'id'):
-		if (lexema not in tabelaID):
+		if (lexema not in idTable):
 			#Se o toke for 'id' e o lexema correspondente nao estiver na tabela
-			tabelaID[lexema] = {'token':token, 'tipo':tipo}
+			idTable[lexema] = {'token':token, 'tipo':tipo}
 			print('\t|{:12}|{:24}|{:12}|'.format(token, lexema, tipo))
 		else:
-			into = tabelaID.get(lexema)
+			into = idTable.get(lexema)
 			print('\t|{:12}|{:24}|{:12}|'.format(into['token'], lexema, into['tipo']))
 	else:
 		print('\t|{:12}|{:24}|{:12}|'.format(tupla['token'], lexema, tupla['tipo']))
