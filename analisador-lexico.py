@@ -274,19 +274,22 @@ print('\t{:_^52}'.format(''))
 print ('\t|{:^12}|{:^24}|{:^12}|'.format('TOKEN', 'LEXEMA', 'TIPO'))
 print('\t|{:-^50}|'.format(''))
 
-x = '1'
-while (x is not 'EOF' and x is not 'ERRO'):
+token = 'continue'
+while (token is not 'EOF' and token is not 'ERRO'):
 	tupla = leToken()
-	x = tupla['token']
 
-	if(tupla['token'] is 'id'):
-		if (tupla['lexema'] not in tabelaID):
+	token 	= tupla['token']
+	lexema 	= tupla['lexema']
+	tipo 	= tupla['tipo']
+
+	if(token is 'id'):
+		if (lexema not in tabelaID):
 			#Se o toke for 'id' e o lexema correspondente nao estiver na tabela
-			tabelaID[tupla['lexema']] = {'token':tupla['token'], 'tipo':tupla['tipo']}
-			print('\t|{:12}|{:24}|{:12}|'.format(tupla['token'], tupla['lexema'], tupla['tipo']))
+			tabelaID[lexema] = {'token':token, 'tipo':tipo}
+			print('\t|{:12}|{:24}|{:12}|'.format(token, lexema, tipo))
 		else:
-			into = tabelaID.get(tupla['lexema'])
-			print('\t|{:12}|{:24}|{:12}|'.format(into['token'], tupla['lexema'], into['tipo']))
+			into = tabelaID.get(lexema)
+			print('\t|{:12}|{:24}|{:12}|'.format(into['token'], lexema, into['tipo']))
 	else:
-		print('\t|{:12}|{:24}|{:12}|'.format(tupla['token'], tupla['lexema'], tupla['tipo']))
+		print('\t|{:12}|{:24}|{:12}|'.format(tupla['token'], lexema, tupla['tipo']))
 print('\t{:-^52}'.format(''))
