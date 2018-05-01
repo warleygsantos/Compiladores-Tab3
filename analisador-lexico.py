@@ -270,9 +270,9 @@ def leToken():
 				logging.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
 				return {'token':token, 'tipo':tipo, 'lexema':lexema}
 
-print('\t{:_^40}'.format(''))
-print ('\t|{:^12}|{:^12}|{:^12}|'.format('TOKEN', 'LEXEMA', 'TIPO'))
-print('\t|{:-^38}|'.format(''))
+print('\t{:_^52}'.format(''))
+print ('\t|{:^12}|{:^24}|{:^12}|'.format('TOKEN', 'LEXEMA', 'TIPO'))
+print('\t|{:-^50}|'.format(''))
 
 x = '1'
 while (x is not 'EOF' and x is not 'ERRO'):
@@ -283,8 +283,10 @@ while (x is not 'EOF' and x is not 'ERRO'):
 		if (tupla['lexema'] not in tabelaID):
 			#Se o toke for 'id' e o lexema correspondente nao estiver na tabela
 			tabelaID[tupla['lexema']] = {'token':tupla['token'], 'tipo':tupla['tipo']}
-			print('\t|{:12}|{:12}|{:12}|'.format(tupla['token'], tupla['lexema'], tupla['tipo']))
+			print('\t|{:12}|{:24}|{:12}|'.format(tupla['token'], tupla['lexema'], tupla['tipo']))
 		else:
 			into = tabelaID.get(tupla['lexema'])
-			print('\t|{:12}|{:12}|{:12}|'.format(into['token'], tupla['lexema'], into['tipo']))
-print('\t{:-^40}'.format(''))
+			print('\t|{:12}|{:24}|{:12}|'.format(into['token'], tupla['lexema'], into['tipo']))
+	else:
+		print('\t|{:12}|{:24}|{:12}|'.format(tupla['token'], tupla['lexema'], tupla['tipo']))
+print('\t{:-^52}'.format(''))
