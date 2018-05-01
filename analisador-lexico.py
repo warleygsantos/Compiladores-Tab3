@@ -159,9 +159,7 @@ transitionsTable = {
 			')'		:16,
 			';'		:16,
 			'e'		:16,
-			'E'		:16,
-			':'		:16,
-			'\\'	:16
+			'E'		:16
 		},
 	17:
 		#State transitions 17. {'CHARACTER' : NEW_STATE}
@@ -187,9 +185,7 @@ transitionsTable = {
 			')'		:17,
 			';'		:17,
 			'e'		:17,
-			'E'		:17,
-			':'		:17,
-			'\\'	:17
+			'E'		:17
 		},
 	18:
 		#State transitions 18. {'CHARACTER' : NEW_STATE}
@@ -270,9 +266,14 @@ def leToken():
 			c = 'D'
 
 		disc = transitionsTable[estado]
-		if(c in disc):
+		if((c in disc) or (estado is 16) or (estado is 17)):
 			#If transition is valid update values of the lexeme string, tell, nComunm and nRows.
-			estado = disc[c]
+			if(estado is not 16 and estado is not 17):
+				estado = disc[c]
+			elif (estado is 16):
+				estado = disc.get(c, 16)
+			elif(estado is 17):
+				estado = disc.get(c, 17)
 			lexema = lexema + buffe
 			tell = tell + 1
 			nColumn = nColumn + 1
