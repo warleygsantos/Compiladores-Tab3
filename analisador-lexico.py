@@ -282,8 +282,6 @@ def leToken(sourceCode):
 			if (c is '\n'):
 				nRow = nRow + 1
 				nColumn = 1
-			if(c is '\t'):
-				nColumn = nColumn + 3
 		else:
 			#Ignore or return: accept or reject.
 			continua = False
@@ -329,6 +327,5 @@ while (token is not 'EOF' and token is not 'ERRO'):
 	else:
 		token = tupla['token']
 		tipo = tupla['tipo']
-	lexema = lexema.replace("\n", " ")
 	print('|{:12}|{:40}|{:12}|'.format(token, lexema, tipo))
 print('{:-^68}'.format(''))
