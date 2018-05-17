@@ -18,11 +18,11 @@ inicio
 		fimse
 	fimse
 
-	B<-B+1;
+	B<-B+1e5;
 	B<-B+2;
 	B<-B+3;
 	D<-B;
-	C<-5.0;
+	C<-5.0E+3;
 
 	escreva "\nB=\n";
 	escreva D;

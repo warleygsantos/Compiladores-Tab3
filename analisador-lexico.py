@@ -128,8 +128,8 @@ transitionsTable = {
 		#State transitions 14. {'CHARACTER' : NEW_STATE}
 		{
 			'D':14,
-			'e':14,
-			'E':14
+			'e':19,
+			'E':19
 		},
 	15:
 		#State transitions 15. {'CHARACTER' : NEW_STATE}
@@ -260,13 +260,15 @@ def leToken(sourceCode):
 			c = 'EOF'
 		buffe = c
 
-		if (utilitarios.isLiteral(c)):
+		if ((c is 'e' or c is 'E') and (estado is 13 or estado is 14)):
+			#Check if is e or E numeric
+			c = c
+		elif (utilitarios.isLiteral(c)):
 			#Check if is literal.
 			c = 'L'
 		elif (utilitarios.isNumeral(c)):
 			#Check if is numeric.
 			c = 'D'
-
 		disc = transitionsTable[estado]
 		if(c in disc or ((estado is 16 or estado is 17) and c is not 'EOF')):
 			#If transition is valid: Change state and update values of the lexeme string, tell, nComunm and nRows.
