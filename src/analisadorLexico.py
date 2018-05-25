@@ -1,10 +1,7 @@
-import logging
+import myLogging as log
 import utilitarios
 
-FORMAT = '%(asctime)s %(levelname)s:%(name)s:%(lineno)s\t-> %(message)s'
-logging.basicConfig(filename='analisador-lexico.log',level=logging.INFO,format=FORMAT, datefmt='%d-%m %H:%M:%S')
-
-logging.info('Beging')
+log.info('Beging')
 
 ################################################## TABLES DEFINITION ###################################################
 tokens = {
@@ -290,44 +287,12 @@ def leToken(sourceCode):
 			if utilitarios.isFinalState(estado):
 				token = tokens[estado]
 				if(token in ('Comentário', 'Tab', 'Salto', 'Espaço')):
-					logging.info('Ignorou token {}'.format(token))
+					log.info('Ignorou token {}'.format(token))
 					return leToken(sourceCode)
-				logging.info('Token:{:<20}tLexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
+				log.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
 				return {'token':token, 'lexema':lexema, 'tipo':tipo}
 			else:
 				token = 'ERRO'
 				tipo = "Erro na linha: {}, Coluna: {} - {}".format(nRow, nColumn, error[estado])
-				logging.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
+				log.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
 				return {'token':token, 'tipo':tipo, 'lexema':lexema}
-
-########################################################################################################################
-
-#Open and read the source code file.
-file = open('FONTE.ALG', 'r')
-sourceCode = file.read()
-
-print('{:_^68}'.format(''))
-print ('|{:^12}|{:^40}|{:^12}|'.format('TOKEN', 'LEXEMA', 'TIPO'))
-print('|{:-^66}|'.format(''))
-
-token = 'continue'
-while (token is not 'EOF' and token is not 'ERRO'):
-	tupla = leToken(sourceCode)
-
-	token 	= tupla['token']
-	lexema 	= tupla['lexema']
-	tipo 	= tupla['tipo']
-
-	if(token is 'id'):
-		if (lexema not in idTable):
-			#Se o toke for 'id' e o lexema correspondente nao estiver na tabela
-			idTable[lexema] = {'token':token, 'tipo':tipo}
-		else:
-			into = idTable.get(lexema)
-			token = into['token']
-			tipo = into['tipo']
-	else:
-		token = tupla['token']
-		tipo = tupla['tipo']
-	print('|{:12}|{:40}|{:12}|'.format(token, lexema, tipo))
-print('{:-^68}'.format(''))
