@@ -312,6 +312,70 @@ def lexico(sourceCode):
 
 ######################################################## SINTATICO #####################################################
 
+enumeracao = {
+    1:
+        {'A':'P\'',    'B':'',   'len':1},
+    2:
+        {'A':'P',    'B':'',   'len':3},
+    3:
+        {'A':'V',    'B':'',   'len':3},
+    4:
+        {'A':'LV',    'B':'',   'len':2},
+    5:
+        {'A':'LV',    'B':'',   'len':2},
+    6:
+        {'A':'D',    'B':'',   'len':3},
+    7:
+        {'A':'TIPO',    'B':'',   'len':1},
+    8:
+        {'A':'TIPO',    'B':'',   'len':1},
+    9:
+        {'A':'TIPO',    'B':'',   'len':1},
+    10:
+        {'A':'A',    'B':'',   'len':2},
+    11:
+        {'A':'ES',    'B':'',   'len':3},
+    12:
+        {'A':'ES',    'B':'',   'len':3},
+    13:
+        {'A':'ARG',    'B':'',   'len':1},
+    14:
+        {'A':'ARG',    'B':'',   'len':1},
+    15:
+        {'A':'ARG',    'B':'',   'len':1},
+    16:
+        {'A':'A',    'B':'',   'len':2},
+    17:
+        {'A':'CMD',    'B':'',   'len':4},
+    18:
+        {'A':'LD',    'B':'',   'len':3},
+    19:
+        {'A':'LD',    'B':'',   'len':1},
+    20:
+        {'A':'OPRD',    'B':'',   'len':1},
+    21:
+        {'A':'OPRD',    'B':'',   'len':1},
+    22:
+        {'A':'A',    'B':'',   'len':2},
+    23:
+        {'A':'COND',    'B':'',   'len':2},
+    24:
+        {'A':'CABEÇALHO',    'B':'',   'len':5},
+    25:
+        {'A':'EXP_R',    'B':'',   'len':3},
+    26:
+        {'A':'CORPO',    'B':'',   'len':2},
+    27:
+        {'A':'CORPO',    'B':'',   'len':2},
+    28:
+        {'A':'CORPO',    'B':'',   'len':2},
+    29:
+        {'A':'CORPO',    'B':'',   'len':1},
+    30:
+        {'A':'A',    'B':'',   'len':1}
+}
+
+
 #Open and read the source code file.
 file = open('FONTE.ALG', 'r')
 sourceCode = file.read()
@@ -328,4 +392,3 @@ while (a is not 'EOF' and a is not 'ERRO'):
         a = lexico(sourceCode)['token']
     elif(action[0] is 'R' or action[0] is 'r'):
         print('reduz')
-
