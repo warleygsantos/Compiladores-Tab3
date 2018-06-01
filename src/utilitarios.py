@@ -1,5 +1,3 @@
-import csv
-
 def isLiteral(caracter):
 	'''Entre com isLiteral(caracter) para verificar se caracter corresponde a uma letra do alfabelo.
 	Exemplo: isLiteral(d)
@@ -26,10 +24,3 @@ def isFinalState(index):
 	Os estados finais do DFA implementado são {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 21, 22, 23}
 	'''
 	return index in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 21, 22, 23)
-
-def csv_dict():
-    reader = csv.DictReader(open('tabelaSintatica.csv', 'r'))
-    dict_list = []
-    for line in reader:
-        dict_list.append(line)
-    return dict_list
