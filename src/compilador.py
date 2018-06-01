@@ -1,3 +1,5 @@
+import csv
+
 import myLogging as log
 import utilitarios
 
@@ -43,7 +45,7 @@ idTable = {
 	'real'		: {'token':'real', 		'tipo':''}
 }
 
-transitionsTable = {
+AFDTable = {
 	#Transition table.
 	0:
 		#Initial state transitions. {'CHARACTER' : NEW_STATE}
@@ -234,7 +236,7 @@ tell	= 0 #Current position of reading the source code file.
 nRow 	= 1 #Current line of the source file. Used to return error.
 nColumn = 1 #Current column of the source file. Used to return error.
 
-###################################################### THE CODE ########################################################
+###################################################### LEXICAL #########################################################
 def lexico(sourceCode):
 	'''
 	Retorna VERDADEIRO caso o caracter lido for uma letra. Caso contrário FALSO.
@@ -266,7 +268,7 @@ def lexico(sourceCode):
 		elif (utilitarios.isNumeral(c)):
 			#Check if is numeric.
 			c = 'D'
-		disc = transitionsTable[estado]
+		disc = AFDTable[estado]
 		if(c in disc or ((estado is 16 or estado is 17) and c is not 'EOF')):
 			#If transition is valid: Change state and update values of the lexeme string, tell, nComunm and nRows.
 			if(estado is not 16 and estado is not 17):
@@ -289,6 +291,11 @@ def lexico(sourceCode):
 				if(token in ('Comentário', 'Tab', 'Salto', 'Espaço')):
 					log.info('Ignorou token {}'.format(token))
 					return lexico(sourceCode)
+				if (token is 'id' and lexema in idTable):
+				#Se o token for 'id' e o lexema correspondente nao estiver na tabela
+					token = lexema
+				elif(token is 'id'):
+					idTable[lexema] = {'token':token, 'tipo':tipo}
 				log.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
 				return {'token':token, 'lexema':lexema, 'tipo':tipo}
 			else:
@@ -297,34 +304,25 @@ def lexico(sourceCode):
 				log.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
 				return {'token':token, 'tipo':tipo, 'lexema':lexema}
 
-########################################################################################################################
+######################################################## SINTATICO #####################################################
 
 #Open and read the source code file.
 file = open('FONTE.ALG', 'r')
 sourceCode = file.read()
 
-print('{:_^68}'.format(''))
-print ('|{:^12}|{:^40}|{:^12}|'.format('TOKEN', 'LEXEMA', 'TIPO'))
-print('|{:-^66}|'.format(''))
+stack = [0]
 
-token = 'continue'
-while (token is not 'EOF' and token is not 'ERRO'):
+with open('tabelaSintatica.csv') as syntacticTable:
+	reader = csv.DictReader(syntacticTable)
+#	for row in reader:
+#	    print(row['A'], row['ES'])
+
+a = None
+while (a is not 'EOF' and a is not 'ERRO'):
 	tupla = lexico(sourceCode)
 
-	token 	= tupla['token']
-	lexema 	= tupla['lexema']
-	tipo 	= tupla['tipo']
+#	token 	= tupla['token']
+#	lexema 	= tupla['lexema']
+#	tipo 	= tupla['tipo']
 
-	if(token is 'id'):
-		if (lexema not in idTable):
-			#Se o toke for 'id' e o lexema correspondente nao estiver na tabela
-			idTable[lexema] = {'token':token, 'tipo':tipo}
-		else:
-			into = idTable.get(lexema)
-			token = into['token']
-			tipo = into['tipo']
-	else:
-		token = tupla['token']
-		tipo = tupla['tipo']
-	print('|{:12}|{:40}|{:12}|'.format(token, lexema, tipo))
-print('{:-^68}'.format(''))
+	a = tupla['token']
