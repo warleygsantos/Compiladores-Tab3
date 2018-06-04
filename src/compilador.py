@@ -314,65 +314,65 @@ def lexico(sourceCode):
 
 enumeracao = {
     1:
-        {'A':'P\'',    'B':'',   'len':1},
+        {'A':'P\'',    'B':'P',   'len':1},
     2:
-        {'A':'P',    'B':'',   'len':3},
+        {'A':'P',    'B':'inicio V A',   'len':3},
     3:
-        {'A':'V',    'B':'',   'len':3},
+        {'A':'V',    'B':'varinicio LV',   'len':3},
     4:
-        {'A':'LV',    'B':'',   'len':2},
+        {'A':'LV',    'B':'D LV',   'len':2},
     5:
-        {'A':'LV',    'B':'',   'len':2},
+        {'A':'LV',    'B':'varfim;',   'len':2},
     6:
-        {'A':'D',    'B':'',   'len':3},
+        {'A':'D',    'B':'id TIPO;',   'len':3},
     7:
-        {'A':'TIPO',    'B':'',   'len':1},
+        {'A':'TIPO',    'B':'inteiro',   'len':1},
     8:
-        {'A':'TIPO',    'B':'',   'len':1},
+        {'A':'TIPO',    'B':'real',   'len':1},
     9:
-        {'A':'TIPO',    'B':'',   'len':1},
+        {'A':'TIPO',    'B':'lit',   'len':1},
     10:
-        {'A':'A',    'B':'',   'len':2},
+        {'A':'A',    'B':'ES A',   'len':2},
     11:
-        {'A':'ES',    'B':'',   'len':3},
+        {'A':'ES',    'B':'leia id;',   'len':3},
     12:
-        {'A':'ES',    'B':'',   'len':3},
+        {'A':'ES',    'B':'escreva ARG;',   'len':3},
     13:
-        {'A':'ARG',    'B':'',   'len':1},
+        {'A':'ARG',    'B':'literal',   'len':1},
     14:
-        {'A':'ARG',    'B':'',   'len':1},
+        {'A':'ARG',    'B':'num',   'len':1},
     15:
-        {'A':'ARG',    'B':'',   'len':1},
+        {'A':'ARG',    'B':'id',   'len':1},
     16:
-        {'A':'A',    'B':'',   'len':2},
+        {'A':'A',    'B':'CMD A',   'len':2},
     17:
-        {'A':'CMD',    'B':'',   'len':4},
+        {'A':'CMD',    'B':'id rcb LD;',   'len':4},
     18:
-        {'A':'LD',    'B':'',   'len':3},
+        {'A':'LD',    'B':'OPRD opm OPRD',   'len':3},
     19:
-        {'A':'LD',    'B':'',   'len':1},
+        {'A':'LD',    'B':'OPRD',   'len':1},
     20:
-        {'A':'OPRD',    'B':'',   'len':1},
+        {'A':'OPRD',    'B':'id',   'len':1},
     21:
-        {'A':'OPRD',    'B':'',   'len':1},
+        {'A':'OPRD',    'B':'num',   'len':1},
     22:
-        {'A':'A',    'B':'',   'len':2},
+        {'A':'A',    'B':'COND A',   'len':2},
     23:
-        {'A':'COND',    'B':'',   'len':2},
+        {'A':'COND',    'B':'CABEÇALHO CORPO',   'len':2},
     24:
-        {'A':'CABEÇALHO',    'B':'',   'len':5},
+        {'A':'CABEÇALHO',    'B':'se (EXP_R) então',   'len':5},
     25:
-        {'A':'EXP_R',    'B':'',   'len':3},
+        {'A':'EXP_R',    'B':'OPRD opr OPRD',   'len':3},
     26:
-        {'A':'CORPO',    'B':'',   'len':2},
+        {'A':'CORPO',    'B':'ES CORPO',   'len':2},
     27:
-        {'A':'CORPO',    'B':'',   'len':2},
+        {'A':'CORPO',    'B':'CMD CORPO',   'len':2},
     28:
-        {'A':'CORPO',    'B':'',   'len':2},
+        {'A':'CORPO',    'B':'COND CORPO',   'len':2},
     29:
-        {'A':'CORPO',    'B':'',   'len':1},
+        {'A':'CORPO',    'B':'fimse',   'len':1},
     30:
-        {'A':'A',    'B':'',   'len':1}
+        {'A':'A',    'B':'fim',   'len':1}
 }
 
 
