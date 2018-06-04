@@ -318,7 +318,7 @@ enumeracao = {
     2:
         {'A':'P',    'B':'inicio V A',   'len':3},
     3:
-        {'A':'V',    'B':'varinicio LV',   'len':3},
+        {'A':'V',    'B':'varinicio LV',   'len':2},
     4:
         {'A':'LV',    'B':'D LV',   'len':2},
     5:
@@ -388,7 +388,7 @@ while (a is not 'EOF' and a is not 'ERRO'):
     #print('stack: {}{}\ta: {}'.format(stack[0], type(stack[0]),a))
     action = syntacticTable[stack[0]][a]
     nAction = int(action.lstrip('SsRr'))
-    print('Linha: {} Coluna: {} Acao: {}'.format(stack[0], a, action))
+    print('Estado: {}\tSimbolo: {}\tAcao: {}'.format(stack[0], a, action))
 
     if(action[0] is 'S' or action[0] is 's'):
         stack.insert(0, nAction)
@@ -396,5 +396,7 @@ while (a is not 'EOF' and a is not 'ERRO'):
     elif(action[0] is 'R' or action[0] is 'r'):
         for n in range(0, enumeracao[nAction]['len']):
             stack.pop(0)
+        print('Desempilhou {} estados. Novo topo: {}'.format(enumeracao[nAction]['len'], stack[0]))
+        print('topo: {}  GOTO: {}'.format(stack[0], enumeracao[nAction]['A']))
         stack.insert(0, int(syntacticTable[stack[0]][enumeracao[nAction]['A']]))
         print('{} -> {}'.format(enumeracao[nAction]['A'], enumeracao[nAction]['B']))
