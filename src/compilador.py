@@ -397,3 +397,4 @@ while (a is not 'EOF' and a is not 'ERRO'):
         for n in range(0, enumeracao[nAction]['len']):
             stack.pop(0)
         stack.insert(0, int(syntacticTable[stack[0]][enumeracao[nAction]['A']]))
+        print('{} -> {}'.format(enumeracao[nAction]['A'], enumeracao[nAction]['B']))
