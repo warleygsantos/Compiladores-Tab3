@@ -8,7 +8,7 @@ log.info('Beging')
 ################################################## TABLES DEFINITION ###################################################
 tokens = {
     #Matching STATE and TOKEN.
-    1:'Literal',
+    1:'literal',
     2:'id',
     3:'Comentário',
     4:'EOF',
@@ -388,6 +388,7 @@ while (a is not 'EOF' and a is not 'ERRO'):
     #print('stack: {}{}\ta: {}'.format(stack[0], type(stack[0]),a))
     action = syntacticTable[stack[0]][a]
     nAction = int(action.lstrip('SsRr'))
+    print('_________________________________________')
     print('Estado: {}\tSimbolo: {}\tAcao: {}'.format(stack[0], a, action))
 
     if(action[0] is 'S' or action[0] is 's'):
@@ -400,3 +401,4 @@ while (a is not 'EOF' and a is not 'ERRO'):
         print('topo: {}  GOTO: {}'.format(stack[0], enumeracao[nAction]['A']))
         stack.insert(0, int(syntacticTable[stack[0]][enumeracao[nAction]['A']]))
         print('{} -> {}'.format(enumeracao[nAction]['A'], enumeracao[nAction]['B']))
+    print(stack)
