@@ -359,9 +359,9 @@ enumeracao = {
     22:
         {'A':'A',    'B':'COND A',   'len':2},
     23:
-        {'A':'COND',    'B':'CABEÇALHO CORPO',   'len':2},
+        {'A':'COND',    'B':'CABECALHO CORPO',   'len':2},
     24:
-        {'A':'CABEÇALHO',    'B':'se (EXP_R) então',   'len':5},
+        {'A':'CABECALHO',    'B':'se (EXP_R) então',   'len':5},
     25:
         {'A':'EXP_R',    'B':'OPRD opr OPRD',   'len':3},
     26:
@@ -387,7 +387,6 @@ syntacticTable = utilitarios.csv_dict()
 a = lexico(sourceCode)['token']
 while (a is not 'EOF' and a is not 'ERRO'):
     #print('stack: {}{}\ta: {}'.format(stack[0], type(stack[0]),a))
-    print(a)
     action = syntacticTable[stack[0]][a]
     nAction = int(action.lstrip('SsRr'))
     print('_________________________________________')
