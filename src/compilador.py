@@ -33,7 +33,7 @@ idTable = {
     'inicio'    : {'token':'inicio',    'tipo':''},
     'varinicio' : {'token':'varinicio', 'tipo':''},
     'varfim'    : {'token':'varfim',    'tipo':''},
-    'id'        : {'token':'id',        'tipo':''},
+    #'id'        : {'token':'id',        'tipo':''},
     'int'       : {'token':'int',       'tipo':''},
     'real'      : {'token':'real',      'tipo':''},
     'lit'       : {'token':'lit',       'tipo':''},
@@ -386,6 +386,7 @@ syntacticTable = utilitarios.csv_dict()
 a = lexico(sourceCode)['token']
 while (a is not 'EOF' and a is not 'ERRO'):
     #print('stack: {}{}\ta: {}'.format(stack[0], type(stack[0]),a))
+    print(a)
     action = syntacticTable[stack[0]][a]
     nAction = int(action.lstrip('SsRr'))
     print('_________________________________________')
