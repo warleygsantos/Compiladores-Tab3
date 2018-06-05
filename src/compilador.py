@@ -297,11 +297,12 @@ def lexico(sourceCode):
                 if(token in ('Comentário', 'Tab', 'Salto', 'Espaço')):
                     log.info('Ignorou token {}'.format(token))
                     return lexico(sourceCode)
-                if (token is 'id' and lexema in idTable):
-                #Se o token for 'id' e o lexema correspondente nao estiver na tabela
-                    token = lexema
                 elif(token is 'id'):
-                    idTable[lexema] = {'token':token, 'tipo':tipo}
+                    if(lexema in idTable.keys()):
+                        token = idTable[lexema]['token']
+                    elif(lexema not in idTable):
+                        #Se o token for 'id' e o lexema correspondente nao estiver na tabela
+                        idTable[lexema] = {'token':token, 'tipo':tipo}
                 log.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
                 return {'token':token, 'lexema':lexema, 'tipo':tipo}
             else:
