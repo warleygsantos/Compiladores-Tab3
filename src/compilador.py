@@ -12,9 +12,9 @@ tokens = {
     2:'id',
     3:'Comentário',
     4:'EOF',
-    5:'OPR',
-    6:'OPR',
-    7:'OPR',
+    5:'OPRD',
+    6:'OPRD',
+    7:'OPRD',
     8:'RCB',
     9:'OPM',
     10:'AB_P',
@@ -33,7 +33,6 @@ idTable = {
     'inicio'    : {'token':'inicio',    'tipo':''},
     'varinicio' : {'token':'varinicio', 'tipo':''},
     'varfim'    : {'token':'varfim',    'tipo':''},
-    #'id'        : {'token':'id',        'tipo':''},
     'int'       : {'token':'int',       'tipo':''},
     'real'      : {'token':'real',      'tipo':''},
     'lit'       : {'token':'lit',       'tipo':''},
@@ -43,7 +42,7 @@ idTable = {
     'num'       : {'token':'num',       'tipo':''},
     'rcb'       : {'token':'rcb',       'tipo':''},
     'opm'       : {'token':'opm',       'tipo':''},
-    'opr'       : {'token':'opr',       'tipo':''},
+    'oprd'       : {'token':'oprd',       'tipo':''},
     'se'        : {'token':'se',        'tipo':''},
     'entao'     : {'token':'entao',     'tipo':''},
     'senao'     : {'token':'senao',     'tipo':''},
@@ -297,11 +296,12 @@ def lexico(sourceCode):
                 if(token in ('Comentário', 'Tab', 'Salto', 'Espaço')):
                     log.info('Ignorou token {}'.format(token))
                     return lexico(sourceCode)
-                if (token is 'id' and lexema in idTable):
-                #Se o token for 'id' e o lexema correspondente nao estiver na tabela
-                    token = lexema
                 elif(token is 'id'):
-                    idTable[lexema] = {'token':token, 'tipo':tipo}
+                    if(lexema in idTable.keys()):
+                        token = idTable[lexema]['token']
+                    elif(lexema not in idTable):
+                        #Se o token for 'id' e o lexema correspondente nao estiver na tabela
+                        idTable[lexema] = {'token':token, 'tipo':tipo}
                 log.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
                 return {'token':token, 'lexema':lexema, 'tipo':tipo}
             else:
