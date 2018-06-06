@@ -221,7 +221,9 @@ AFDTable = {
         {}
 }
 
-error = {
+####################################################### TRATADOR DE ERROS ##############################################
+
+erroLexico = {
     #Error mapping table.
     0:
         'ERRO0',
@@ -236,6 +238,40 @@ error = {
     20:
         'ERRO5',
 }
+
+errorsTable = {
+    'ERRO':
+        'Erro',
+    'ERRO0':
+        'Simbolo disperso',
+    'ERRO1':
+        'Constante literal nao terminada',
+    'ERRO2':
+        'Comentario nao terminado',
+    'ERRO3':
+        'Constante numerica esperada',
+    'ERRO4':
+        'Constante numerica esperada',
+    'ERRO5':
+        'Constante numerica esperada',
+    'ERRO6':
+        'Fecha parenteses nao casou',
+    'ERRO7':
+        'Nao eh possivel definir variaveis nessa regiao de codigo',
+    'ERRO8':
+        'Ponto-virgula esperado',
+    'ERRO9':
+        'Nao abriu parenteses apos o uso da palavra reservada \'se\'',
+    'ERRO10':
+        'Nao finalisou programa com \'fim\'',
+    'ERRO11':
+        'Informe o identificador'
+}
+
+
+def handleError(a):
+    print('\nErro na linha {} e coluna {}.\n{}: {}'.format(a['linha'], a['coluna'], errorsTable[a['action']], a['lexema']))
+    exit()
 
 ################################################# STATIC VARIABLES #####################################################
 tell    = 0 #Current position of reading the source code file.
@@ -309,7 +345,8 @@ def lexico(sourceCode):
                 token = 'ERRO'
                 lexema = lexema + buffe
                 log.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
-                return {'token':token, 'tipo':tipo, 'lexema':lexema, 'linha':nRow, 'coluna':nColumn, 'action':error[estado]}
+                a = {'token':token, 'tipo':tipo, 'lexema':lexema, 'linha':nRow, 'coluna':nColumn, 'action':erroLexico[estado]}
+                handleError(a)
 
 ######################################################## SINTATICO #####################################################
 
@@ -376,23 +413,6 @@ enumeracao = {
         {'A':'A',    'B':'fim',   'len':1}
 }
 
-errosSintatico = {
-    'ERRO':
-        'Erro',
-    'ERRO0':
-        'Simbolo disperso',
-    'ERRO1':
-        'Constante literal nao terminada',
-    'ERRO2':
-        'Comentario nao terminado',
-    'ERRO3':
-        'Constante numerica esperada',
-    'ERRO4':
-        'Constante numerica esperada',
-    'ERRO5':
-        'Constante numerica esperada'
-}
-
 
 #Open and read the source code file.
 file = open('FONTE.ALG', 'r')
@@ -401,16 +421,9 @@ sourceCode = file.read()
 stack = [0]
 syntacticTable = utilitarios.csv_dict()
 
-def handleError(a):
-    print('\nErro na linha {} e coluna {}.\n{}: {}'.format(a['linha'], a['coluna'], errosSintatico[a['action']], a['lexema']))
-    exit()
 
 a = lexico(sourceCode)
 while(True):
-    if(a['token'] == 'ERRO'):
-        handleError(a)
-        break
-
     action = syntacticTable[stack[0]][a['token']]
     if(action[0] is 'S' or action[0] is 's'):
         nAction = int(action.lstrip('Ss'))
