@@ -385,19 +385,12 @@ stack = [0]
 syntacticTable = utilitarios.csv_dict()
 
 a = lexico(sourceCode)['token']
-continua = True
-while(continua):
-    print('_________________________________________')
-    #print('stack: {}{}\ta: {}'.format(stack[0], type(stack[0]),a))
+while(True):
     action = syntacticTable[stack[0]][a]
-    print(action)
     if(action[0] is 'A'):
         print('Aceito')
-        continua = False
         break
     nAction = int(action.lstrip('SsRr'))
-
-    print('Estado: {}\tSimbolo: {}\tAcao: {}'.format(stack[0], a, action))
 
     if(action[0] is 'S' or action[0] is 's'):
         stack.insert(0, nAction)
@@ -405,10 +398,7 @@ while(continua):
     elif(action[0] is 'R' or action[0] is 'r'):
         for n in range(0, enumeracao[nAction]['len']):
             stack.pop(0)
-        print('Desempilhou {} estados. Novo topo: {}'.format(enumeracao[nAction]['len'], stack[0]))
-        print('topo: {}  GOTO: {}'.format(stack[0], enumeracao[nAction]['A']))
         stack.insert(0, int(syntacticTable[stack[0]][enumeracao[nAction]['A']]))
         print('{} -> {}'.format(enumeracao[nAction]['A'], enumeracao[nAction]['B']))
     else:
         continua = False
-    print(stack)
