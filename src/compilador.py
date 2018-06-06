@@ -390,7 +390,13 @@ while(continua):
     print('_________________________________________')
     #print('stack: {}{}\ta: {}'.format(stack[0], type(stack[0]),a))
     action = syntacticTable[stack[0]][a]
+    print(action)
+    if(action[0] is 'A'):
+        print('Aceito')
+        continua = False
+        break
     nAction = int(action.lstrip('SsRr'))
+
     print('Estado: {}\tSimbolo: {}\tAcao: {}'.format(stack[0], a, action))
 
     if(action[0] is 'S' or action[0] is 's'):
