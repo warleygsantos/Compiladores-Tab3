@@ -1,4 +1,4 @@
-,inicio,varinicio,varfim,PT_V,id,int,real,lit,leia,escreva,literal,num,rcb,opm,se,AB_P,FC_P,entao,opr,fimse,fim,$,P',P,V,LV,D,TIPO,A,ES,ARG,CMD,LD,OPRD,COND,CABECALHO,EXP_R,CORPO
+,inicio,varinicio,varfim,PT_V,id,int,real,lit,leia,escreva,literal,num,rcb,opm,se,AB_P,FC_P,entao,opr,fimse,fim,EOF,P',P,V,LV,D,TIPO,A,ES,ARG,CMD,LD,OPRD,COND,CABECALHO,EXP_R,CORPO
 0,S2,,,,,,,,,,,,,,,,,,,,,ACC,,1,,,,,,,,,,,,,,
 1,,,,,,,,,,,,,,,,,,,,,,R1,,,,,,,,,,,,,,,,
 2,,S4,,,,,,,,,,,,,,,,,,,,,,,3,,,,,,,,,,,,,

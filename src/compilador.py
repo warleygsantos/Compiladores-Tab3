@@ -385,7 +385,8 @@ stack = [0]
 syntacticTable = utilitarios.csv_dict()
 
 a = lexico(sourceCode)['token']
-while (a is not 'EOF' and a is not 'ERRO'):
+continua = True
+while(continua):
     print('_________________________________________')
     #print('stack: {}{}\ta: {}'.format(stack[0], type(stack[0]),a))
     action = syntacticTable[stack[0]][a]
@@ -402,4 +403,6 @@ while (a is not 'EOF' and a is not 'ERRO'):
         print('topo: {}  GOTO: {}'.format(stack[0], enumeracao[nAction]['A']))
         stack.insert(0, int(syntacticTable[stack[0]][enumeracao[nAction]['A']]))
         print('{} -> {}'.format(enumeracao[nAction]['A'], enumeracao[nAction]['B']))
+    else:
+        continua = False
     print(stack)
