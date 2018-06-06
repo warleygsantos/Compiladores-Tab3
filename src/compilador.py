@@ -224,17 +224,17 @@ AFDTable = {
 error = {
     #Error mapping table.
     0:
-        'Simbolo disperso',
+        'ERRO0',
     16:
-        'Constante literal nao terminada',
+        'ERRO1',
     17:
-        'Comentario nao terminado',
+        'ERRO2',
     18:
-        'Constante numerica esperada',
+        'ERRO3',
     19:
-        'Constante numerica esperada',
+        'ERRO4',
     20:
-        'Constante numerica esperada',
+        'ERRO5',
 }
 
 ################################################# STATIC VARIABLES #####################################################
@@ -307,10 +307,9 @@ def lexico(sourceCode):
                 return {'token':token, 'lexema':lexema, 'tipo':tipo, 'linha':nRow, 'coluna':nColumn}
             else:
                 token = 'ERRO'
-                tipo = error[estado]
                 lexema = lexema + buffe
                 log.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
-                return {'token':token, 'tipo':tipo, 'lexema':lexema, 'linha':nRow, 'coluna':nColumn}
+                return {'token':token, 'tipo':tipo, 'lexema':lexema, 'linha':nRow, 'coluna':nColumn, 'action':error[estado]}
 
 ######################################################## SINTATICO #####################################################
 
@@ -377,6 +376,23 @@ enumeracao = {
         {'A':'A',    'B':'fim',   'len':1}
 }
 
+errosSintatico = {
+    'ERRO':
+        'Erro',
+    'ERRO0':
+        'Simbolo disperso',
+    'ERRO1':
+        'Constante literal nao terminada',
+    'ERRO2':
+        'Comentario nao terminado',
+    'ERRO3':
+        'Constante numerica esperada',
+    'ERRO4':
+        'Constante numerica esperada',
+    'ERRO5':
+        'Constante numerica esperada'
+}
+
 
 #Open and read the source code file.
 file = open('FONTE.ALG', 'r')
@@ -386,16 +402,16 @@ stack = [0]
 syntacticTable = utilitarios.csv_dict()
 
 def handleError(a):
-    print('\nErro na linha {} e coluna {}.\n{}: {}'.format(a['linha'], a['coluna'], a['tipo'], a['lexema']))
+    print('\nErro na linha {} e coluna {}.\n{}: {}'.format(a['linha'], a['coluna'], errosSintatico[a['action']], a['lexema']))
+    exit()
 
 a = lexico(sourceCode)
 while(True):
     if(a['token'] == 'ERRO'):
         handleError(a)
         break
-    action = syntacticTable[stack[0]][a['token']]
-    
 
+    action = syntacticTable[stack[0]][a['token']]
     if(action[0] is 'S' or action[0] is 's'):
         nAction = int(action.lstrip('Ss'))
         stack.insert(0, nAction)
@@ -410,5 +426,5 @@ while(True):
         print('Aceito')
         break
     else:
+        a['action'] = action
         handleError(a)
-        break
