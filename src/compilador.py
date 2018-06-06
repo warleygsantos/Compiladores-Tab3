@@ -308,6 +308,7 @@ def lexico(sourceCode):
             else:
                 token = 'ERRO'
                 tipo = error[estado]
+                lexema = lexema + buffe
                 log.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
                 return {'token':token, 'tipo':tipo, 'lexema':lexema, 'linha':nRow, 'coluna':nColumn}
 
@@ -393,19 +394,21 @@ while(True):
         handleError(a)
         break
     action = syntacticTable[stack[0]][a['token']]
-    if(action == 'ACC'):
-        print('Aceito')
-        break
-    elif(action == 'ERRO'):
-        handleError(a)
-        break
-    nAction = int(action.lstrip('SsRr'))
+    
 
     if(action[0] is 'S' or action[0] is 's'):
+        nAction = int(action.lstrip('Ss'))
         stack.insert(0, nAction)
         a = lexico(sourceCode)
     elif(action[0] is 'R' or action[0] is 'r'):
+        nAction = int(action.lstrip('Rr'))
         for n in range(0, enumeracao[nAction]['len']):
             stack.pop(0)
         stack.insert(0, int(syntacticTable[stack[0]][enumeracao[nAction]['A']]))
         print('{} -> {}'.format(enumeracao[nAction]['A'], enumeracao[nAction]['B']))
+    elif(action == 'ACC'):
+        print('Aceito')
+        break
+    else:
+        handleError(a)
+        break
