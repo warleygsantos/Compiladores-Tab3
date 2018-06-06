@@ -224,17 +224,17 @@ AFDTable = {
 error = {
     #Error mapping table.
     0:
-        'Simbolo disperso.',
+        'Simbolo disperso',
     16:
-        'Constante literal nao terminada.',
+        'Constante literal nao terminada',
     17:
-        'Comentario nao terminado.',
+        'Comentario nao terminado',
     18:
-        'Constante numerica esperada.',
+        'Constante numerica esperada',
     19:
-        'Constante numerica esperada.',
+        'Constante numerica esperada',
     20:
-        'Constante numerica esperada.',
+        'Constante numerica esperada',
 }
 
 ################################################# STATIC VARIABLES #####################################################
@@ -307,9 +307,9 @@ def lexico(sourceCode):
                 return {'token':token, 'lexema':lexema, 'tipo':tipo, 'linha':nRow, 'coluna':nColumn}
             else:
                 token = 'ERRO'
-                tipo = "Erro na linha: {}, Coluna: {} - {}".format(nRow, nColumn, error[estado])
+                tipo = error[estado]
                 log.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
-                return {'token':token, 'tipo':tipo, 'lexema':lexema}
+                return {'token':token, 'tipo':tipo, 'lexema':lexema, 'linha':nRow, 'coluna':nColumn}
 
 ######################################################## SINTATICO #####################################################
 
@@ -384,17 +384,20 @@ sourceCode = file.read()
 stack = [0]
 syntacticTable = utilitarios.csv_dict()
 
+def handleError(a):
+    print('\nErro na linha {} e coluna {}.\n{}: {}'.format(a['linha'], a['coluna'], a['tipo'], a['lexema']))
+
 a = lexico(sourceCode)
 while(True):
     if(a['token'] == 'ERRO'):
-        print('Erro lexico: {}'.format(a['tipo']))
+        handleError(a)
         break
     action = syntacticTable[stack[0]][a['token']]
     if(action == 'ACC'):
         print('Aceito')
         break
     elif(action == 'ERRO'):
-        print('Erro {} não esperado. Linha: {} Coluna: {}'.format(a['lexema'], a['linha'], a['coluna']))
+        handleError(a)
         break
     nAction = int(action.lstrip('SsRr'))
 
