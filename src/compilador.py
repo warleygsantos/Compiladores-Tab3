@@ -304,7 +304,7 @@ def lexico(sourceCode):
                         #Se o token for 'id' e o lexema correspondente nao estiver na tabela
                         idTable[lexema] = {'token':token, 'tipo':tipo}
                 log.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
-                return {'token':token, 'lexema':lexema, 'tipo':tipo}
+                return {'token':token, 'lexema':lexema, 'tipo':tipo, 'linha':nRow, 'coluna':nColumn}
             else:
                 token = 'ERRO'
                 tipo = "Erro na linha: {}, Coluna: {} - {}".format(nRow, nColumn, error[estado])
@@ -394,7 +394,7 @@ while(True):
         print('Aceito')
         break
     elif(action == 'ERRO'):
-        print('Erro')
+        print('Erro {} não esperado. Linha: {} Coluna: {}'.format(a['lexema'], a['linha'], a['coluna']))
         break
     nAction = int(action.lstrip('SsRr'))
 
