@@ -393,6 +393,9 @@ while(True):
     if(action == 'ACC'):
         print('Aceito')
         break
+    elif(action == 'ERRO'):
+        print('Erro')
+        break
     nAction = int(action.lstrip('SsRr'))
 
     if(action[0] is 'S' or action[0] is 's'):
