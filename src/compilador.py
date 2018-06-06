@@ -387,12 +387,11 @@ syntacticTable = utilitarios.csv_dict()
 a = lexico(sourceCode)['token']
 while(True):
     action = syntacticTable[stack[0]][a]
-    try:
-        nAction = int(action.lstrip('SsRr'))
-    except ValueError:
-        if(action == 'ACC' is False):
-            print('Erro na tabela sintatica')
-            break
+    if(action == 'ACC'):
+        print('Aceito')
+        break
+    nAction = int(action.lstrip('SsRr'))
+
 
     if(action[0] is 'S' or action[0] is 's'):
         stack.insert(0, nAction)
@@ -402,8 +401,5 @@ while(True):
             stack.pop(0)
         stack.insert(0, int(syntacticTable[stack[0]][enumeracao[nAction]['A']]))
         print('{} -> {}'.format(enumeracao[nAction]['A'], enumeracao[nAction]['B']))
-    elif(action[0] is 'A' or action[0] is 'a'):
-        print('Aceito')
-        break
     else:
         continua = False
