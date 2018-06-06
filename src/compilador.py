@@ -384,22 +384,22 @@ sourceCode = file.read()
 stack = [0]
 syntacticTable = utilitarios.csv_dict()
 
-a = lexico(sourceCode)['token']
+a = lexico(sourceCode)
 while(True):
-    action = syntacticTable[stack[0]][a]
+    if(a['token'] == 'ERRO'):
+        print('Erro lexico: {}'.format(a['tipo']))
+        break
+    action = syntacticTable[stack[0]][a['token']]
     if(action == 'ACC'):
         print('Aceito')
         break
     nAction = int(action.lstrip('SsRr'))
 
-
     if(action[0] is 'S' or action[0] is 's'):
         stack.insert(0, nAction)
-        a = lexico(sourceCode)['token']
+        a = lexico(sourceCode)
     elif(action[0] is 'R' or action[0] is 'r'):
         for n in range(0, enumeracao[nAction]['len']):
             stack.pop(0)
         stack.insert(0, int(syntacticTable[stack[0]][enumeracao[nAction]['A']]))
         print('{} -> {}'.format(enumeracao[nAction]['A'], enumeracao[nAction]['B']))
-    else:
-        continua = False
