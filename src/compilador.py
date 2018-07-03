@@ -34,14 +34,14 @@ idTable = {
     'varinicio' : {'token':'varinicio', 'tipo':''},
     'varfim'    : {'token':'varfim',    'tipo':''},
     #'id'        : {'token':'id',        'tipo':''},
-    'int'       : {'token':'int',       'tipo':''},
-    'real'      : {'token':'real',      'tipo':''},
-    'lit'       : {'token':'lit',       'tipo':''},
+    'int'       : {'token':'int',       'tipo':'int'},
+    'real'      : {'token':'real',      'tipo':'double'},
+    'lit'       : {'token':'lit',       'tipo':'literal'},
     'leia'      : {'token':'leia',      'tipo':''},
     'escreva'   : {'token':'escreva',   'tipo':''},
     'literal'   : {'token':'literal',   'tipo':''},
-    'num'       : {'token':'num',       'tipo':''},
-    'rcb'       : {'token':'rcb',       'tipo':''},
+    'num'       : {'token':'num',       'tipo':'int'},
+    'rcb'       : {'token':'rcb',       'tipo':'='},
     'opm'       : {'token':'opm',       'tipo':''},
     'opr'       : {'token':'opr',       'tipo':''},
     'se'        : {'token':'se',        'tipo':''},
@@ -273,83 +273,6 @@ def handleError(a):
     print('\nErro na linha {} e coluna {}.\n{}: {}'.format(a['linha'], a['coluna'], errorsTable[a['action']], a['lexema']))
     exit()
 
-################################################# STATIC VARIABLES #####################################################
-tell    = 0 #Current position of reading the source code file.
-nRow    = 1 #Current line of the source file. Used to return error.
-nColumn = 1 #Current column of the source file. Used to return error.
-
-###################################################### LEXICAL #########################################################
-def lexico(sourceCode):
-    '''
-    Retorna VERDADEIRO caso o caracter lido for uma letra. Caso contrário FALSO.
-    '''
-    global tell
-    global nRow
-    global nColumn
-
-    continua    = True
-    estado      = 0
-    token       = ''
-    lexema      = ''
-    tipo        = ''
-
-    while(continua):
-        if(tell < len(sourceCode)):
-            #Read character by character and check if is EOF.
-            c = sourceCode[tell]
-        else:
-            c = 'EOF'
-        buffe = c
-
-        if ((c is 'e' or c is 'E') and (estado is 13 or estado is 14)):
-            #Check if is e or E numeric
-            c = c
-        elif (utilitarios.isLiteral(c)):
-            #Check if is literal.
-            c = 'L'
-        elif (utilitarios.isNumeral(c)):
-            #Check if is numeric.
-            c = 'D'
-        disc = AFDTable[estado]
-        if(c in disc or ((estado is 16 or estado is 17) and c is not 'EOF')):
-            #If transition is valid: Change state and update values of the lexeme string, tell, nComunm and nRows.
-            if(estado is not 16 and estado is not 17):
-                #See the transitions table and get new state.
-                estado = disc[c]
-            else:
-                #Keep the states 16 and 17 (constant literal and comment) in unexpected symbols.
-                estado = disc.get(c, estado)
-            lexema = lexema + buffe
-            tell = tell + 1
-            nColumn = nColumn + 1
-            if (c is '\n'):
-                nRow = nRow + 1
-                nColumn = 1
-        else:
-            #Ignore or return: accept or reject.
-            continua = False
-            if utilitarios.isFinalState(estado):
-                token = tokens[estado]
-                if(token in ('Comentário', 'Tab', 'Salto', 'Espaço')):
-                    log.info('Ignorou token {}'.format(token))
-                    return lexico(sourceCode)
-                elif(token is 'id'):
-                    if(lexema in idTable.keys()):
-                        token = idTable[lexema]['token']
-                    elif(lexema not in idTable):
-                        #Se o token for 'id' e o lexema correspondente nao estiver na tabela
-                        idTable[lexema] = {'token':token, 'tipo':tipo}
-                log.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
-                return {'token':token, 'lexema':lexema, 'tipo':tipo, 'linha':nRow, 'coluna':nColumn}
-            else:
-                token = 'ERRO'
-                lexema = lexema + buffe
-                log.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
-                a = {'token':token, 'tipo':tipo, 'lexema':lexema, 'linha':nRow, 'coluna':nColumn, 'action':erroLexico[estado]}
-                handleError(a)
-
-######################################################## SINTATICO #####################################################
-
 enumeracao = {
     1:
         {'A':'P\'',    'B':'P',   'len':1},
@@ -413,6 +336,232 @@ enumeracao = {
         {'A':'A',    'B':'fim',   'len':1}
 }
 
+################################################# STATIC VARIABLES #####################################################
+tell    = 0 #Current position of reading the source code file.
+nRow    = 1 #Current line of the source file. Used to return error.
+nColumn = 1 #Current column of the source file. Used to return error.
+
+###################################################### LEXICAL #########################################################
+def lexico(sourceCode):
+    '''
+    Retorna VERDADEIRO caso o caracter lido for uma letra. Caso contrário FALSO.
+    '''
+    global tell
+    global nRow
+    global nColumn
+
+    continua    = True
+    estado      = 0
+    token       = ''
+    lexema      = ''
+    tipo        = ''
+
+    while(continua):
+        if(tell < len(sourceCode)):
+            #Read character by character and check if is EOF.
+            c = sourceCode[tell]
+        else:
+            c = 'EOF'
+        buffe = c
+
+        if ((c is 'e' or c is 'E') and (estado is 13 or estado is 14)):
+            #Check if is e or E numeric
+            c = c
+        elif (utilitarios.isLiteral(c)):
+            #Check if is literal.
+            c = 'L'
+        elif (utilitarios.isNumeral(c)):
+            #Check if is numeric.
+            c = 'D'
+        disc = AFDTable[estado]
+        if(c in disc or ((estado is 16 or estado is 17) and c is not 'EOF')):
+            #If transition is valid: Change state and update values of the lexeme string, tell, nComunm and nRows.
+            if(estado is not 16 and estado is not 17):
+                #See the transitions table and get new state.
+                estado = disc[c]
+            else:
+                #Keep the states 16 and 17 (constant literal and comment) in unexpected symbols.
+                estado = disc.get(c, estado)
+            lexema = lexema + buffe
+            tell = tell + 1
+            nColumn = nColumn + 1
+            if (c is '\n'):
+                nRow = nRow + 1
+                nColumn = 1
+        else:
+            #Ignore or return: accept or reject.
+            continua = False
+            if utilitarios.isFinalState(estado):
+                token = tokens[estado]
+                if(token in ('Comentário', 'Tab', 'Salto', 'Espaço')):
+                    log.info('Ignorou token {}'.format(token))
+                    return lexico(sourceCode)
+                elif(token is 'id'):
+                    if(lexema in idTable.keys()):
+                        token = idTable[lexema]['token']
+                        tipo  = idTable[lexema]['tipo']
+                    elif(lexema not in idTable):
+                        #Se o token for 'id' e o lexema correspondente nao estiver na tabela
+                        idTable[lexema] = {'token':token, 'tipo':tipo}
+                elif(token is 'num'):
+                    tipo = 'int'
+                elif(token is 'opm'):
+                    tipo = lexema
+                elif(token is 'opr'):
+                    tipo = lexema
+                elif(token is 'rcb'):
+                    tipo = '='
+                elif(token is 'literal'):
+                    tipo = 'literal'
+                log.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
+                return {'token':token, 'lexema':lexema, 'tipo':tipo, 'linha':nRow, 'coluna':nColumn}
+            else:
+                token = 'ERRO'
+                lexema = lexema + buffe
+                log.info('Token:{:<20}Lexema:{:<20}Tipo:{}'.format(token, lexema, tipo))
+                a = {'token':token, 'tipo':tipo, 'lexema':lexema, 'linha':nRow, 'coluna':nColumn, 'action':erroLexico[estado]}
+                handleError(a)
+
+######################################################## SEMANTICO #####################################################
+regraSintaticaSemSemanteica = (1, 2, 3, 4, 10, 16, 22, 26, 27, 28, 29)
+pilhaSemantica = []
+Tx = 0
+
+codigoAlvo = ''
+codigoVariaveisTemporarias = ''
+
+def printArquivo(codigo, novalinha):
+    return codigo + novalinha
+
+def sintatico(regra, atributos):
+    global pilhaSemantica
+    global Tx
+    global codigoAlvo
+    global codigoVariaveisTemporarias
+
+    if regra in regraSintaticaSemSemanteica:
+        return
+
+    elif regra is 5:
+        codigoAlvo = codigoAlvo = printArquivo(codigoAlvo, '\n\n\n\n')
+    elif regra is 6:
+        TIPO = pilhaSemantica.pop()
+        _id = atributos.pop(0)
+        _id['tipo'] = TIPO['tipo']
+        idTable[_id['lexema']]['tipo'] = _id['tipo']
+        codigoAlvo = printArquivo(codigoAlvo, '{} {};'.format(_id['tipo'], _id['lexema']))
+    elif regra is 7:
+        TIPO = atributos.pop()
+        TIPO['tipo'] = idTable['int']['tipo']
+        pilhaSemantica.append(TIPO)
+    elif regra is 8:
+        TIPO = atributos.pop()
+        TIPO['tipo'] = idTable['real']['tipo']
+        pilhaSemantica.append(TIPO)
+    elif regra is 9:
+        TIPO = atributos.pop()
+        TIPO['tipo'] = idTable['lit']['tipo']
+        pilhaSemantica.append(TIPO)
+    elif regra is 11:
+        _id = atributos.pop(1)
+        tipo = idTable[_id['lexema']]['tipo']
+        if tipo == 'literal':
+            codigoAlvo = printArquivo(codigoAlvo, 'scanf("%s",{});'.format(_id['lexema']))
+        elif tipo == 'int':
+            codigoAlvo = printArquivo(codigoAlvo, 'scanf("%d",&{});'.format(_id['lexema']))
+        elif tipo == 'double':
+            codigoAlvo = printArquivo(codigoAlvo, 'scanf("%lf",&{});'.format(_id['lexema']))
+        else:
+            print('Erro variavel não declarada')
+            exit()
+    elif regra is 12:
+        ARG = pilhaSemantica.pop()
+        tipo = ARG['tipo']
+        if tipo is 'int':
+            codigoAlvo = printArquivo(codigoAlvo, 'printf("%d",{});'.format(ARG['lexema']))
+        elif tipo is 'double':
+            codigoAlvo = printArquivo(codigoAlvo, 'printf("%f",{});'.format(ARG['lexema']))
+        elif tipo is 'literal':
+            codigoAlvo = printArquivo(codigoAlvo, 'printf("%s",{});'.format(ARG['lexema']))
+        else:
+            codigoAlvo = printArquivo(codigoAlvo, 'caiu em nada {}'.format(ARG['token']))
+    elif regra is 13:
+        ARG = atributos.pop()
+        pilhaSemantica.append(ARG)
+    elif regra is 14:
+        ARG = atributos.pop()
+        pilhaSemantica.append(ARG)
+    elif regra is 15:
+        _id = atributos.pop()
+        if _id['lexema'] in idTable:
+            ARG = _id
+            pilhaSemantica.append(ARG)
+        else:
+            print('Erro, variavel nao declarada')
+    elif regra is 17:
+        _id = atributos.pop(0)
+        #_id = pilhaSemantica.pop()
+        rcb = atributos.pop(0)
+        rcb['tipo'] = '='
+        #LD = atributos.pop(0)
+        LD = pilhaSemantica.pop()
+        #print('{} - {}'.format(_id['tipo'], LD['tipo']))
+        if _id['lexema'] in idTable:
+            #if _id['tipo'] == LD['tipo']:
+            if True:
+                codigoAlvo = printArquivo(codigoAlvo, '{} {} {};'.format(_id['lexema'], rcb['tipo'], LD['lexema']))
+            else:
+                print('Erro: tipos diferentes para atribuição')
+        else:
+            print('Erro: VAriavel não declarada')
+    elif regra is 18:
+        OPRD2 = pilhaSemantica.pop()
+        OPRD1 = pilhaSemantica.pop()
+        opm = atributos.pop(1)
+        if OPRD1['tipo'] is not 'lit' and OPRD1['tipo'] == OPRD2['tipo']:
+            LD = {'lexema': 'T{}'.format(Tx)}
+            codigoVariaveisTemporarias = printArquivo(codigoVariaveisTemporarias, 'int T{};'.format(Tx))
+            Tx = Tx + 1
+            pilhaSemantica.append(LD)
+            codigoAlvo = printArquivo(codigoAlvo, '{} = {} {} {};'.format(LD['lexema'], OPRD1['lexema'], opm['tipo'], OPRD2['lexema']))
+        else:
+            print('Erro: Operandos com tipos incompativeis')
+    elif regra is 19:
+        OPRD = pilhaSemantica.pop()
+        LD = OPRD
+        pilhaSemantica.append(LD)
+    elif regra is 20:
+        _id = atributos.pop()
+        if _id['lexema'] in idTable:
+            OPRD = _id
+            pilhaSemantica.append(OPRD)
+        else:
+            print('Erro: Variavel não declarada')
+    elif regra is 21:
+        num = atributos.pop()
+        OPRD = num
+        pilhaSemantica.append(OPRD)
+    elif regra is 23:
+        codigoAlvo = printArquivo(codigoAlvo, '}')
+    elif regra is 24:
+        EXP_R = pilhaSemantica.pop()
+        codigoAlvo = printArquivo(codigoAlvo, 'if({}){{'.format(EXP_R['lexema']))
+    elif regra is 25:
+        OPRD2 = pilhaSemantica.pop()
+        OPRD1 = pilhaSemantica.pop()
+        opr = atributos.pop(1)
+        if OPRD1['tipo'] is OPRD2['tipo']:
+            EXP_R = {'lexema': 'T{}'.format(Tx)}
+            pilhaSemantica.append(EXP_R)
+            codigoVariaveisTemporarias = printArquivo(codigoVariaveisTemporarias, 'int T{};'.format(Tx))
+            codigoAlvo = printArquivo(codigoAlvo, 'T{} = {} {} {};'.format(Tx, OPRD1['lexema'], opr['tipo'], OPRD2['lexema']))
+            Tx = Tx + 1
+        else:
+            print('Erro: Operandos com tipos incompatíveis.')
+    elif regra is 30:
+        codigoAlvo = printArquivo(codigoAlvo, 'return 0;}')
+######################################################## SINTATICO #####################################################
+
 
 #Open and read the source code file.
 file = open('FONTE.ALG', 'r')
@@ -421,11 +570,13 @@ sourceCode = file.read()
 stack = [0]
 syntacticTable = utilitarios.csv_dict()
 
-
+B = []
 a = lexico(sourceCode)
+tmp = []
 while(True):
     action = syntacticTable[stack[0]][a['token']]
     if(action[0] is 'S' or action[0] is 's'):
+        B.insert(0, a)
         nAction = int(action.lstrip('Ss'))
         stack.insert(0, nAction)
         a = lexico(sourceCode)
@@ -433,11 +584,20 @@ while(True):
         nAction = int(action.lstrip('Rr'))
         for n in range(0, enumeracao[nAction]['len']):
             stack.pop(0)
+            tmp.insert(0, B[n])
         stack.insert(0, int(syntacticTable[stack[0]][enumeracao[nAction]['A']]))
         print('{} -> {}'.format(enumeracao[nAction]['A'], enumeracao[nAction]['B']))
+        sintatico(nAction, tmp)
+        tmp = []
     elif(action == 'ACC'):
         print('Aceito')
         break
     else:
         a['action'] = action
         handleError(a)
+
+saida = open('PROGRAMA.C', 'w')
+saida.write('#include<stdio.h>\n#include<stdlib.h>\ntypedef char literal[256];int main(){')
+saida.write(codigoVariaveisTemporarias)
+saida.write(codigoAlvo)
+saida.close()
