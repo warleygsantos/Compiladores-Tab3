@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
-typedef char literal[256];int main(){int T0;int T1;int T2;int T3;int T4;literal A;int B;int D;int C;
+typedef char literal[256];int main(){int T0;int T1;int T2;double T3;double B;int idade;literal nome;
 
 
 
-printf("%s","Digite B");scanf("%d",&B);printf("%s","Digite A:");scanf("%s",A);T0 = B > 2;if(T0){T1 = B <= 4;if(T1){printf("%s","B esta entre 2 e 4");}}T2 = B + 1;B = T2;T3 = B + 2;B = T3;T4 = B + 3;B = T4;D = B;C = 5;printf("%s","\nB=\n");printf("%d",D);printf("%s","\n");printf("%d",C);printf("%s","\n");printf("%s",A);return 0;}
+printf("%s","Digite seu nome: ");scanf("%s",nome);printf("%s","Digite sua idade: ");scanf("%d",&idade);printf("%s","Digite um numero: ");scanf("%lf",&B);T0 = idade < 18;if(T0){printf("%s","Voce nao pode dirigir\n");}T1 = idade >= 18;if(T1){printf("%s","Voce ja pode ser preso\n");T2 = idade > 100;if(T2){printf("%s","Voce eh muito velho!\n");}}T3 = idade + B;B = T3;printf("%g",B);return 0;}

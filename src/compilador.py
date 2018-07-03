@@ -373,6 +373,10 @@ def lexico(sourceCode):
         elif (utilitarios.isNumeral(c)):
             #Check if is numeric.
             c = 'D'
+        if(estado is 18):
+            tipo = 'double'
+        if(estado is 13):
+            tipo = 'int'
         disc = AFDTable[estado]
         if(c in disc or ((estado is 16 or estado is 17) and c is not 'EOF')):
             #If transition is valid: Change state and update values of the lexeme string, tell, nComunm and nRows.
@@ -403,8 +407,6 @@ def lexico(sourceCode):
                     elif(lexema not in idTable):
                         #Se o token for 'id' e o lexema correspondente nao estiver na tabela
                         idTable[lexema] = {'token':token, 'tipo':tipo}
-                elif(token is 'num'):
-                    tipo = 'int'
                 elif(token is 'opm'):
                     tipo = lexema
                 elif(token is 'opr'):
@@ -432,6 +434,17 @@ codigoVariaveisTemporarias = ''
 
 def printArquivo(codigo, novalinha):
     return codigo + novalinha
+
+def compativeis(opr1, opr2):
+    if (opr1 == 'literal') or (opr2 == 'literal'):
+        print('falso')
+        return False
+    if (opr1 == 'int') or (opr1 == 'double'):
+        if (opr2 == 'int') or (opr2 == 'double'):
+            return True
+    print('falso')
+    return False
+
 
 def sintatico(regra, atributos):
     global pilhaSemantica
@@ -480,7 +493,7 @@ def sintatico(regra, atributos):
         if tipo is 'int':
             codigoAlvo = printArquivo(codigoAlvo, 'printf("%d",{});'.format(ARG['lexema']))
         elif tipo is 'double':
-            codigoAlvo = printArquivo(codigoAlvo, 'printf("%f",{});'.format(ARG['lexema']))
+            codigoAlvo = printArquivo(codigoAlvo, 'printf("%g",{});'.format(ARG['lexema']))
         elif tipo is 'literal':
             codigoAlvo = printArquivo(codigoAlvo, 'printf("%s",{});'.format(ARG['lexema']))
         else:
@@ -498,34 +511,37 @@ def sintatico(regra, atributos):
             pilhaSemantica.append(ARG)
         else:
             print('Erro, variavel nao declarada')
+            exit()
     elif regra is 17:
-        _id = atributos.pop(0)
-        #_id = pilhaSemantica.pop()
+        _id = atributos.pop(2)
         rcb = atributos.pop(0)
         rcb['tipo'] = '='
-        #LD = atributos.pop(0)
         LD = pilhaSemantica.pop()
-        #print('{} - {}'.format(_id['tipo'], LD['tipo']))
         if _id['lexema'] in idTable:
-            #if _id['tipo'] == LD['tipo']:
-            if True:
+            if compativeis(_id['tipo'], LD['tipo']):
                 codigoAlvo = printArquivo(codigoAlvo, '{} {} {};'.format(_id['lexema'], rcb['tipo'], LD['lexema']))
             else:
-                print('Erro: tipos diferentes para atribuição')
+                print('Erro: tipos diferentes para atribuição {} {}'.format(_id['tipo'], LD['tipo']))
+                exit()
         else:
             print('Erro: VAriavel não declarada')
+            exit()
     elif regra is 18:
         OPRD2 = pilhaSemantica.pop()
         OPRD1 = pilhaSemantica.pop()
         opm = atributos.pop(1)
-        if OPRD1['tipo'] is not 'lit' and OPRD1['tipo'] == OPRD2['tipo']:
-            LD = {'lexema': 'T{}'.format(Tx)}
-            codigoVariaveisTemporarias = printArquivo(codigoVariaveisTemporarias, 'int T{};'.format(Tx))
+        if compativeis(OPRD1['tipo'], OPRD2['tipo']):
+            tipo = 'int'
+            if(OPRD1['tipo'] == 'double' or OPRD2['tipo'] == 'double'):
+                tipo = 'double'
+            LD = {'lexema': 'T{}'.format(Tx), 'tipo': '{}'.format('int')}
+            codigoVariaveisTemporarias = printArquivo(codigoVariaveisTemporarias, '{} T{};'.format(tipo, Tx))
             Tx = Tx + 1
             pilhaSemantica.append(LD)
             codigoAlvo = printArquivo(codigoAlvo, '{} = {} {} {};'.format(LD['lexema'], OPRD1['lexema'], opm['tipo'], OPRD2['lexema']))
         else:
             print('Erro: Operandos com tipos incompativeis')
+            exit()
     elif regra is 19:
         OPRD = pilhaSemantica.pop()
         LD = OPRD
@@ -537,6 +553,7 @@ def sintatico(regra, atributos):
             pilhaSemantica.append(OPRD)
         else:
             print('Erro: Variavel não declarada')
+            exit()
     elif regra is 21:
         num = atributos.pop()
         OPRD = num
@@ -550,14 +567,18 @@ def sintatico(regra, atributos):
         OPRD2 = pilhaSemantica.pop()
         OPRD1 = pilhaSemantica.pop()
         opr = atributos.pop(1)
-        if OPRD1['tipo'] is OPRD2['tipo']:
-            EXP_R = {'lexema': 'T{}'.format(Tx)}
+        if compativeis(OPRD1['tipo'], OPRD2['tipo']):
+            tipo = 'int'
+            if(OPRD1['tipo'] == 'double' or OPRD2['tipo'] == 'double'):
+                tipo = 'double'
+            EXP_R = {'lexema': 'T{}'.format(Tx), 'tipo':tipo}
             pilhaSemantica.append(EXP_R)
-            codigoVariaveisTemporarias = printArquivo(codigoVariaveisTemporarias, 'int T{};'.format(Tx))
+            codigoVariaveisTemporarias = printArquivo(codigoVariaveisTemporarias, '{} T{};'.format(tipo, Tx))
             codigoAlvo = printArquivo(codigoAlvo, 'T{} = {} {} {};'.format(Tx, OPRD1['lexema'], opr['tipo'], OPRD2['lexema']))
             Tx = Tx + 1
         else:
-            print('Erro: Operandos com tipos incompatíveis.')
+            print('Erro: Operandos com tipos incompatíveis. {} {}'.format(OPRD1['tipo'], OPRD2['tipo']))
+            exit()
     elif regra is 30:
         codigoAlvo = printArquivo(codigoAlvo, 'return 0;}')
 ######################################################## SINTATICO #####################################################
@@ -572,7 +593,7 @@ syntacticTable = utilitarios.csv_dict()
 
 B = []
 a = lexico(sourceCode)
-tmp = []
+atributos = []
 while(True):
     action = syntacticTable[stack[0]][a['token']]
     if(action[0] is 'S' or action[0] is 's'):
@@ -584,11 +605,11 @@ while(True):
         nAction = int(action.lstrip('Rr'))
         for n in range(0, enumeracao[nAction]['len']):
             stack.pop(0)
-            tmp.insert(0, B[n])
+            atributos.insert(0, B[n])
         stack.insert(0, int(syntacticTable[stack[0]][enumeracao[nAction]['A']]))
         print('{} -> {}'.format(enumeracao[nAction]['A'], enumeracao[nAction]['B']))
-        sintatico(nAction, tmp)
-        tmp = []
+        sintatico(nAction, atributos)
+        atributos = []
     elif(action == 'ACC'):
         print('Aceito')
         break
@@ -600,4 +621,5 @@ saida = open('PROGRAMA.C', 'w')
 saida.write('#include<stdio.h>\n#include<stdlib.h>\ntypedef char literal[256];int main(){')
 saida.write(codigoVariaveisTemporarias)
 saida.write(codigoAlvo)
+#saida.write(codigoAlvo.format(codigoVariaveisTemporarias))
 saida.close()
