@@ -1,26 +1,30 @@
 inicio
-	varinicio
-		B real;
-		idade int;
-		nome lit;
-	varfim;
-
-	escreva "Digite seu nome: ";
-	leia nome;
-	escreva "Digite sua idade: ";
-	leia idade;
-	escreva "Digite um numero: ";
-	leia B;
-
-	se(idade<18) entao
-		escreva "Voce nao pode dirigir\n";
-	fimse
-	se(idade>=18) entao
-		escreva "Voce ja pode ser preso\n";
-		se(idade>100) entao
-			escreva "Voce eh muito velho!\n";
-		fimse
-	fimse
-	B<-idade + B;
-	escreva B;
+varinicio
+A lit;
+B int;
+D int;
+C real;
+varfim;
+escreva "Digite B: ";
+leia B;
+escreva "Digite A: ";
+leia A;
+se(B>2)
+entao
+se(B<=4)
+entao
+escreva "B esta entre 2 e 4";
+fimse
+fimse
+B<-B+1;
+B<-B+2;
+B<-B+3;
+D<-B;
+C<-5.0;
+escreva "\nB=\n";
+escreva D;
+escreva "\n";
+escreva C;
+escreva "\n";
+escreva A;
 fim

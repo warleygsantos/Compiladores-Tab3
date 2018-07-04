@@ -433,6 +433,7 @@ codigoAlvo = ''
 codigoVariaveisTemporarias = ''
 
 def printArquivo(codigo, novalinha):
+    print(novalinha +'\n')
     return codigo + novalinha
 
 def compativeis(opr1, opr2):
@@ -485,7 +486,7 @@ def sintatico(regra, atributos):
         elif tipo == 'double':
             codigoAlvo = printArquivo(codigoAlvo, 'scanf("%lf",&{});'.format(_id['lexema']))
         else:
-            print('Erro variavel não declarada')
+            print('Erro: Variavel não declarada. Linha: {},{}'.format(_id['linha'], _id['coluna']))
             exit()
     elif regra is 12:
         ARG = pilhaSemantica.pop()
@@ -496,8 +497,6 @@ def sintatico(regra, atributos):
             codigoAlvo = printArquivo(codigoAlvo, 'printf("%g",{});'.format(ARG['lexema']))
         elif tipo is 'literal':
             codigoAlvo = printArquivo(codigoAlvo, 'printf("%s",{});'.format(ARG['lexema']))
-        else:
-            codigoAlvo = printArquivo(codigoAlvo, 'caiu em nada {}'.format(ARG['token']))
     elif regra is 13:
         ARG = atributos.pop()
         pilhaSemantica.append(ARG)
@@ -510,21 +509,24 @@ def sintatico(regra, atributos):
             ARG = _id
             pilhaSemantica.append(ARG)
         else:
-            print('Erro, variavel nao declarada')
+            print('Erro: variavel nao declarada: {} . Linha: {}, {}'.format(_id['lexema'], _id['linha'], _id['coluna']))
             exit()
     elif regra is 17:
-        _id = atributos.pop(2)
+        print(atributos)
+        print(pilhaSemantica)
+        _id = atributos.pop(0)
         rcb = atributos.pop(0)
         rcb['tipo'] = '='
         LD = pilhaSemantica.pop()
-        if _id['lexema'] in idTable:
+
+        if _id['tipo']:
             if compativeis(_id['tipo'], LD['tipo']):
                 codigoAlvo = printArquivo(codigoAlvo, '{} {} {};'.format(_id['lexema'], rcb['tipo'], LD['lexema']))
             else:
-                print('Erro: tipos diferentes para atribuição {} {}'.format(_id['tipo'], LD['tipo']))
+                print('Erro: tipos diferentes para atribuição {} {}. Linha: {}, {}'.format(_id['tipo'], LD['tipo'], _id['linha'], _id['coluna']))
                 exit()
         else:
-            print('Erro: VAriavel não declarada')
+            print('Erro: Variavel não declarada. Linha: {}, {}'.format(_id['linha'], _id['coluna']))
             exit()
     elif regra is 18:
         OPRD2 = pilhaSemantica.pop()
@@ -540,7 +542,7 @@ def sintatico(regra, atributos):
             pilhaSemantica.append(LD)
             codigoAlvo = printArquivo(codigoAlvo, '{} = {} {} {};'.format(LD['lexema'], OPRD1['lexema'], opm['tipo'], OPRD2['lexema']))
         else:
-            print('Erro: Operandos com tipos incompativeis')
+            print('Erro: Operandos com tipos incompativeis. Linha: {}, {}'.format(opm['linha'], opm['coluna']))
             exit()
     elif regra is 19:
         OPRD = pilhaSemantica.pop()
@@ -552,7 +554,7 @@ def sintatico(regra, atributos):
             OPRD = _id
             pilhaSemantica.append(OPRD)
         else:
-            print('Erro: Variavel não declarada')
+            print('Erro: Variavel não declarada: {}. Linha: {}, {}'.format(_id['lexema'], _id['linha'], _id['coluna']))
             exit()
     elif regra is 21:
         num = atributos.pop()
@@ -577,7 +579,7 @@ def sintatico(regra, atributos):
             codigoAlvo = printArquivo(codigoAlvo, 'T{} = {} {} {};'.format(Tx, OPRD1['lexema'], opr['tipo'], OPRD2['lexema']))
             Tx = Tx + 1
         else:
-            print('Erro: Operandos com tipos incompatíveis. {} {}'.format(OPRD1['tipo'], OPRD2['tipo']))
+            print('Erro: Operandos com tipos incompatíveis. {} {}. Linha: {}, {}'.format(OPRD1['tipo'], OPRD2['tipo'], opr['linha'], opr['coluna']))
             exit()
     elif regra is 30:
         codigoAlvo = printArquivo(codigoAlvo, 'return 0;}')
@@ -621,5 +623,4 @@ saida = open('PROGRAMA.C', 'w')
 saida.write('#include<stdio.h>\n#include<stdlib.h>\ntypedef char literal[256];int main(){')
 saida.write(codigoVariaveisTemporarias)
 saida.write(codigoAlvo)
-#saida.write(codigoAlvo.format(codigoVariaveisTemporarias))
 saida.close()
